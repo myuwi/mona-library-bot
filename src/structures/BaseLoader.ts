@@ -3,8 +3,7 @@ import * as path from 'path';
 import { __rootdir__ } from '../root';
 
 export class BaseLoader {
-
-    public async readdirRecursive(directory: string) {
+    protected async readdirRecursive(directory: string) {
         const result: string[] = [];
 
         const read = async (dir: string) => {

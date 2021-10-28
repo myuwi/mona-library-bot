@@ -1,18 +1,20 @@
 import { Client, Intents } from 'discord.js';
 
-import { Commands } from '../structures/Commands';
+import { CommandManager } from '../structures/CommandManager';
 import { ComboLibraryManager } from '../structures/ComboLibraryManager';
 import { Events } from '../structures/Events';
 import { db } from '../database/db';
 import { createSchema } from '../database/schema';
-import { config } from '../../config';
+import { colors } from '../colors';
+import * as config from '../../config.json';
 
 export class MClient extends Client {
-    public commands: Commands;
+    public commands: CommandManager;
     public events: Events;
-    public comboLib: ComboLibraryManager;
+    public comboLibraryManager: ComboLibraryManager;
     public db: typeof db;
     public config: typeof config;
+    public colors: typeof colors;
 
     constructor() {
         super({
@@ -21,11 +23,12 @@ export class MClient extends Client {
                 Intents.FLAGS.GUILD_MESSAGES
             ]
         });
-        this.commands = new Commands();
+        this.commands = new CommandManager();
         this.events = new Events(this);
-        this.comboLib = new ComboLibraryManager(this);
-        this.db = db;
+        this.colors = colors;
         this.config = config;
+        this.comboLibraryManager = new ComboLibraryManager(this, this.config.documentId);
+        this.db = db;
     }
 
     private async init() {
@@ -33,10 +36,10 @@ export class MClient extends Client {
         await this.commands.register();
     }
 
-    public async start(token: string) {
+    public async run() {
         await createSchema();
         await this.init();
-        await this.login(token);
+        await this.login(this.config.token);
 
         return this;
     }

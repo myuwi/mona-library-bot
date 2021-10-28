@@ -47,11 +47,16 @@ export class DocElement {
 
 export class DocParser {
     private apiClient?: docs.docs_v1.Docs;
+    protected documentId: string;
+
+    constructor(documentId: string) {
+        this.documentId = documentId;
+    }
 
     private async init() {
         console.log('Initializing doc parser');
         const auth = new docs.auth.GoogleAuth({
-            keyFilename: 'google-api-keys.json',
+            keyFilename: 'google-api-credentials.json',
             scopes: ['https://www.googleapis.com/auth/documents']
         });
 
@@ -67,20 +72,19 @@ export class DocParser {
         return client;
     }
 
-    private async fetchDoc() {
+    private async fetchDocument() {
         const client = this.apiClient || await this.init();
-        const documentId = '1DafFm_vfrur0fgNWeEmhEGhcJeyNOg3ccaupzBv0zjo';
 
-        console.log(`Fetching document with id '${documentId}'`);
+        console.log(`Fetching document with id '${this.documentId}'`);
         const res = await client.documents.get({
-            documentId
+            documentId: this.documentId
         });
 
         return res.data;
     }
 
     public async parseDoc() {
-        const doc = await this.fetchDoc();
+        const doc = await this.fetchDocument();
         console.log('Parsing document...');
         // console.log(doc);
 

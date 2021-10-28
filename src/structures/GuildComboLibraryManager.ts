@@ -35,7 +35,7 @@ export class GuildComboLibraryManager {
     }
 
     private async getLibraryChannel() {
-        const guildSettings = await this.client.db.getGuildSettings(this.guild.id);
+        const guildSettings = await this.client.db.guilds.settings.get(this.guild.id);
 
         if (!guildSettings) {
             throw new Error('Guild settings not found.');
@@ -73,7 +73,7 @@ export class GuildComboLibraryManager {
         return messageCollection;
     }
 
-    private async _getLibraryStatus(messageCollection: Collection<String, Message>, mo: MessageOptions[]) {
+    private async getLibraryStatus(messageCollection: Collection<String, Message>, mo: MessageOptions[]) {
         if (!messageCollection.size) return {
             status: LibraryStatuses.NOT_FOUND
         };
@@ -130,7 +130,6 @@ export class GuildComboLibraryManager {
         return diff;
     }
 
-
     public async update() {
         const channel = await this.getLibraryChannel();
         if (!channel) return LibraryUpdateResponse.CHANNEL_NOT_SET;
@@ -138,7 +137,7 @@ export class GuildComboLibraryManager {
 
         const doc = await this.clManager.parseDoc();
         if (!doc) throw new Error('Cannot open document');
-        const comboEmbeds = await ComboLibraryManager.toDiscordEmbeds(ComboLibraryManager.parseCombos(doc));
+        const comboEmbeds = await this.clManager.toDiscordEmbeds(this.clManager.parseCombos(doc));
 
         // Send embeds if the channel is empty
         if (!messageCollection.size) {
@@ -150,7 +149,7 @@ export class GuildComboLibraryManager {
 
             return LibraryUpdateResponse.UPDATED;
         }
-        const res = await this._getLibraryStatus(messageCollection, comboEmbeds);
+        const res = await this.getLibraryStatus(messageCollection, comboEmbeds);
 
         switch (res.status) {
             case LibraryStatuses.UP_TO_DATE:
@@ -202,9 +201,9 @@ export class GuildComboLibraryManager {
 
         const doc = await this.clManager.parseDoc();
         if (!doc) throw new Error('Cannot open document');
-        const comboEmbeds = await ComboLibraryManager.toDiscordEmbeds(ComboLibraryManager.parseCombos(doc));
+        const comboEmbeds = await this.clManager.toDiscordEmbeds(this.clManager.parseCombos(doc));
 
-        const res = await this._getLibraryStatus(messageCollection, comboEmbeds);
+        const res = await this.getLibraryStatus(messageCollection, comboEmbeds);
 
         return res.status;
     }

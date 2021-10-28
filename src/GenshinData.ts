@@ -1,6 +1,5 @@
 export const GenshinData: {
     name: string;
-    nameShort?: string;
     rarity: number;
 }[] = [
         { name: 'Aether', rarity: 5 },
@@ -30,13 +29,14 @@ export const GenshinData: {
         { name: 'Ningguang', rarity: 4 },
         { name: 'Noelle', rarity: 4 },
         { name: 'Qiqi', rarity: 5 },
-        { name: 'Raiden Shogun', nameShort: 'Raiden', rarity: 5 },
+        { name: 'Raiden Shogun', rarity: 5 },
         { name: 'Razor', rarity: 4 },
         { name: 'Rosaria', rarity: 4 },
         { name: 'Sara', rarity: 4 },
         { name: 'Sayu', rarity: 4 },
         { name: 'Sucrose', rarity: 4 },
         { name: 'Venti', rarity: 5 },
+        { name: 'Xiangling', rarity: 4 },
         { name: 'Xiao', rarity: 5 },
         { name: 'Xingqiu', rarity: 4 },
         { name: 'Xinyan', rarity: 4 },

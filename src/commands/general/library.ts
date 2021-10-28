@@ -2,18 +2,21 @@ import { Message, MessageEmbed } from 'discord.js';
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
 import { LibraryPurgeResponse, LibraryUpdateResponse, LibraryStatuses } from '../../structures/GuildComboLibraryManager';
+import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
 
 export const command: Command = {
     name: 'library',
     description: 'Manage the combo library on the current channel',
-    ownerOnly: true,
+    group: 'General',
+    usage: 'library <update | status | purge | channel [set <channel id> | unset]>',
+    permissionLevel: PermissionLevel.MODERATOR,
     run: async (message: Message, args: string[], client: MClient) => {
         if (!args.length) return message.channel.send('No args');
 
         const [operation, ...options] = args;
 
-        const guildLibraryManager = await client.comboLib.get(message.guild!);
+        const guildLibraryManager = await client.comboLibraryManager.fetch(message.guild!);
         if (!guildLibraryManager) {
             return await message.channel.send({
                 embeds: [
@@ -21,7 +24,6 @@ export const command: Command = {
                 ]
             });
         }
-
 
         switch (operation) {
             case 'update': {
@@ -35,9 +37,12 @@ export const command: Command = {
                     const resId = await guildLibraryManager.update();
 
                     const messages = {
-                        [LibraryUpdateResponse.ALREADY_UP_TO_DATE]: EmbedUtils.success('The combo library is already up to date, no update was performed'),
-                        [LibraryUpdateResponse.CHANNEL_NOT_SET]: EmbedUtils.error('The combo library channel has not been set on this server'),
-                        [LibraryUpdateResponse.UPDATED]: EmbedUtils.success('The combo library channel has been updated succeessfully')
+                        [LibraryUpdateResponse.CHANNEL_NOT_SET]:
+                            EmbedUtils.error('The combo library channel has not been set on this server'),
+                        [LibraryUpdateResponse.ALREADY_UP_TO_DATE]:
+                            EmbedUtils.success('The combo library is already up to date, no update was performed'),
+                        [LibraryUpdateResponse.UPDATED]:
+                            EmbedUtils.success('The combo library channel has been updated succeessfully')
                     };
 
                     if (messages[resId]) {
@@ -64,9 +69,12 @@ export const command: Command = {
                 const resId = await guildLibraryManager.purge();
 
                 const messages = {
-                    [LibraryPurgeResponse.SUCCESS]: EmbedUtils.success('The combo library has been purged successfully'),
-                    [LibraryPurgeResponse.CHANNEL_NOT_SET]: EmbedUtils.error('The combo library channel has not been set on this server'),
-                    [LibraryPurgeResponse.NOT_FOUND]: EmbedUtils.error('Unable to purge the combo library channel, the channel is already empty')
+                    [LibraryPurgeResponse.SUCCESS]:
+                        EmbedUtils.success('The combo library has been purged successfully'),
+                    [LibraryPurgeResponse.CHANNEL_NOT_SET]:
+                        EmbedUtils.error('The combo library channel has not been set on this server'),
+                    [LibraryPurgeResponse.NOT_FOUND]:
+                        EmbedUtils.error('Unable to purge the combo library channel, the channel is already empty')
                 };
 
                 if (messages[resId]) {
@@ -75,9 +83,15 @@ export const command: Command = {
                 break;
             }
             case 'status': {
+                const statusMessage = await message.channel.send({
+                    embeds: [
+                        EmbedUtils.info('Checking library status, please wait...')
+                    ]
+                });
+
                 const statusId = await guildLibraryManager.status();
 
-                const guildSettings = await client.db.getGuildSettings(message.guild!.id);
+                const guildSettings = await client.db.guilds.settings.get(message.guild!.id);
 
                 let status: string;
                 switch (statusId) {
@@ -100,21 +114,21 @@ export const command: Command = {
 
                 const embed = new MessageEmbed()
                     .setTitle('Combo Library Status')
-                    .setColor(client.config.colors.primary)
+                    .setColor(client.colors.primary)
                     .setImage('https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png')
                     .setFooter(client.user!.username)
                     .setTimestamp(Date.now())
                     .addField('Status', status)
-                    .addField('Library Channel', guildSettings?.sync_channel_id ? `<#${guildSettings.sync_channel_id}>` : 'Unset', true)
-                    .addField('Log Channel', guildSettings?.log_channel_id ? `<#${guildSettings.log_channel_id}>` : 'Unset', true)
-                    .addField('Auto Sync', guildSettings?.auto_sync ? 'Enabled' : 'Disabled', true);
+                    .addField('Library Channel', guildSettings?.sync_channel_id ? `<#${guildSettings.sync_channel_id}>` : 'Unset', true);
+                // .addField('Log Channel', guildSettings?.log_channel_id ? `<#${guildSettings.log_channel_id}>` : 'Unset', true)
+                // .addField('Auto Sync', guildSettings?.auto_sync ? 'Enabled' : 'Disabled', true);
 
-                message.channel.send({ embeds: [embed] });
+                statusMessage.edit({ embeds: [embed] });
                 break;
             }
             case 'channel': {
                 if (!options[0]) {
-                    const guildSettings = await client.db.getGuildSettings(message.guild!.id);
+                    const guildSettings = await client.db.guilds.settings.get(message.guild!.id);
                     const channelId = guildSettings?.sync_channel_id;
 
                     if (channelId) {
@@ -164,7 +178,7 @@ export const command: Command = {
                         channelId = message.channel.id;
                     }
 
-                    await client.db.updateGuildSettings(message.guild!.id, { sync_channel_id: channelId });
+                    await client.db.guilds.settings.update(message.guild!.id, { sync_channel_id: channelId });
 
                     return await message.channel.send({
                         embeds: [
@@ -172,12 +186,17 @@ export const command: Command = {
                         ]
                     });
                 } else if (options[0] === 'unset') {
-                    // TODO: Clear channel first
-                    await client.db.updateGuildSettings(message.guild!.id, { sync_channel_id: null });
+                    const statusMessage = await message.channel.send({
+                        embeds: [
+                            EmbedUtils.info('Clearing channel, please wait...')
+                        ]
+                    });
 
-                    const embed = EmbedUtils.success('The combo library has been unbound');
+                    await guildLibraryManager.purge();
 
-                    return message.channel.send({ embeds: [embed] });
+                    await client.db.guilds.settings.update(message.guild!.id, { sync_channel_id: null });
+
+                    return statusMessage.edit({ embeds: [EmbedUtils.success('The combo library has been unbound')] });
                 }
                 break;
             }

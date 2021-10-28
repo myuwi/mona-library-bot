@@ -8,13 +8,45 @@ export type DbGuild = {
     log_channel_id: string | null;
 };
 
+export type DbRolePermissionOverride = {
+    guildId: string;
+    roleId: string;
+    commandName: string;
+    allow: boolean;
+};
+
+export type DbUserPermissionOverride = {
+    guildId: string;
+    userId: string;
+    commandName: string;
+    allow: boolean;
+};
+
 export const createSchema = () => knex.schema
     .createTable('guilds', (t) => {
-        t.string('id', 32).notNullable().unique();
+        t.string('id', 32).notNullable().primary().unique();
         t.string('prefix', 8);
         t.boolean('auto_sync');
         t.string('sync_channel_id', 32);
         t.string('log_channel_id', 32);
+    })
+    .createTable('role_permission_overrides', (t) => {
+        t.string('guildId', 32).notNullable();
+        t.string('roleId', 32).notNullable();
+        t.string('commandName', 32).notNullable();
+        t.boolean('allow').notNullable();
+
+        t.foreign('guildId').references('guilds.id');
+        t.unique(['guildId', 'roleId', 'commandName']);
+    })
+    .createTable('user_permission_overrides', (t) => {
+        t.string('guildId', 32).notNullable();
+        t.string('userId', 32).notNullable();
+        t.string('commandName', 32).notNullable();
+        t.boolean('allow').notNullable();
+
+        t.foreign('guildId').references('guilds.id');
+        t.unique(['guildId', 'userId', 'commandName']);
     })
     .then(() => console.log(' * Schema created.'))
     .catch((err: any) => {

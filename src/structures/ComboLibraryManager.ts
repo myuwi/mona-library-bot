@@ -1,10 +1,8 @@
 import { DocParser, DocElement } from './DocParser';
-import axios from 'axios';
-import { EmbedFieldData, Guild, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, NewsChannel, TextChannel, ThreadChannel } from 'discord.js';
+import { EmbedFieldData, Guild, MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
 import { GenshinData } from '../GenshinData';
 import { ThumbnailGenerator } from './ThumbnailGenerator';
 import { MClient } from '../client/MClient';
-import { sleep } from '../utils';
 import { GuildComboLibraryManager } from './GuildComboLibraryManager';
 
 export type ComboLibrary = {
@@ -32,28 +30,17 @@ export type ComboField = {
     value: DocElement[];
 };
 
-export enum LibraryStatuses {
-    NOT_SYNCED,
-    UP_TO_DATE,
-    OUT_OF_DATE,
-}
-
-export enum LibraryUpdateMessages {
-    ALREADY_UP_TO_DATE,
-    UPDATED
-}
-
 const ZERO_WIDTH_SPACE = String.fromCharCode(8203);
 
 export class ComboLibraryManager extends DocParser {
     private client: MClient;
 
-    constructor(client: MClient) {
-        super();
+    constructor(client: MClient, documentId: string) {
+        super(documentId);
         this.client = client;
     }
 
-    public async get(guild: Guild | string) {
+    public async fetch(guild: Guild | string) {
         try {
             if (guild instanceof Guild) {
                 return new GuildComboLibraryManager(this.client, this, guild);
@@ -71,7 +58,7 @@ export class ComboLibraryManager extends DocParser {
         }
     }
 
-    public static parseCombos(
+    public parseCombos(
         elements: DocElement[],
         options = {
             sanitizeNewLines: true
@@ -248,7 +235,7 @@ export class ComboLibraryManager extends DocParser {
         return comboLibrary;
     }
 
-    public static async toDiscordEmbeds(comboLibrary: ComboLibrary) {
+    public async toDiscordEmbeds(comboLibrary: ComboLibrary) {
         const assets: { [s: string]: string; } = {
             'Vaporize Combos': 'https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png',
             'Freeze Combos': 'https://cdn.discordapp.com/attachments/809845587905871914/878954338788180038/Namecard_Background_Ganyu_Qilin_188px.png',
@@ -285,7 +272,7 @@ export class ComboLibraryManager extends DocParser {
             }
 
             if (category.headingId) {
-                desc.push(`${ZERO_WIDTH_SPACE}\n[View on Google Docs](https://docs.google.com/document/d/1DafFm_vfrur0fgNWeEmhEGhcJeyNOg3ccaupzBv0zjo/edit#heading=${category.headingId})`);
+                desc.push(`${ZERO_WIDTH_SPACE}\n[View on Google Docs](https://docs.google.com/document/d/${this.documentId}/edit#heading=${category.headingId})`);
             }
 
             embed.setDescription(desc.join('\n'));
@@ -357,7 +344,7 @@ export class ComboLibraryManager extends DocParser {
                     // }
                 }
 
-                const headerLink = combo.headingId && `[View on Google Docs](https://docs.google.com/document/d/1DafFm_vfrur0fgNWeEmhEGhcJeyNOg3ccaupzBv0zjo/edit#heading=${combo.headingId})`;
+                const headerLink = combo.headingId && `[View on Google Docs](https://docs.google.com/document/d/${this.documentId}/edit#heading=${combo.headingId})`;
 
                 // add link to the end of the last field
                 if (headerLink) {
@@ -373,9 +360,12 @@ export class ComboLibraryManager extends DocParser {
 
                 if (combo.members.length) {
                     const image = await ThumbnailGenerator.abyss(combo.members);
+
+                    const imageName = combo.members.map((m) => m.toLowerCase().replace(' ', '')).join('-');
+
                     if (image) {
-                        messageOptions.files = [new MessageAttachment(image, 'team.png')];
-                        embed.setImage('attachment://team.png');
+                        messageOptions.files = [new MessageAttachment(image, `${imageName}.png`)];
+                        embed.setImage(`attachment://${imageName}.png`);
                     }
                 }
 
@@ -386,7 +376,7 @@ export class ComboLibraryManager extends DocParser {
         return embeds;
     }
 
-    public static async toDiscordDirectory(comboLibrary: ComboLibrary) {
+    public async toDiscordDirectory(comboLibrary: ComboLibrary) {
         const embed = new MessageEmbed()
             .setTitle('Mona Combo Library')
             .setColor('#5565f1')
@@ -410,7 +400,7 @@ export class ComboLibraryManager extends DocParser {
                 // console.log(combo);
 
                 if (combo.headingId) {
-                    comboLinks.push(`‣ [${combo.name}](https://docs.google.com/document/d/1DafFm_vfrur0fgNWeEmhEGhcJeyNOg3ccaupzBv0zjo/edit#heading=${combo.headingId})`);
+                    comboLinks.push(`‣ [${combo.name}](https://docs.google.com/document/d/${this.documentId}/edit#heading=${combo.headingId})`);
                 }
             }
 
@@ -421,194 +411,5 @@ export class ComboLibraryManager extends DocParser {
         }
 
         return embed;
-    }
-
-    public static compare(embeds1: MessageEmbed[], embeds2: MessageEmbed[]) {
-        // Embed count is different
-        if (embeds1.length !== embeds2.length) throw new Error('Embed arrays are of different length');
-
-        const diff: number[] = [];
-
-        for (let i = 0; i < embeds1.length; i++) {
-            const embed1 = embeds1[i];
-            const embed2 = embeds2[i];
-
-            if (embed1.title !== embed2.title ||
-                embed1.description !== embed2.description ||
-                embed1.footer?.text !== embed2.footer?.text ||
-                embed1.fields.length !== embed2.fields.length ||
-                embed1.fields.some((f, i) => f.name !== embed2.fields[i].name || f.value !== embed2.fields[i].value)
-            ) {
-                diff.push(i);
-            }
-        }
-
-        return diff;
-    }
-
-    private static async getLibraryChannelEmbeds(client: MClient, channel: TextChannel | NewsChannel | ThreadChannel) {
-        if (!channel) throw new Error('Channel with specified id not found');
-        if (!channel.isText() || !('guild' in channel)) throw new Error('Channel with specified id is not a text channel');
-
-        const messageCollection = await channel.messages.fetch();
-        messageCollection.sweep((m) => {
-            if (m.author.id !== client.user!.id) return true;
-            if (!m.embeds.length) return true;
-
-            const embedDesc = m.embeds[0].description;
-            if (!!embedDesc && embedDesc.includes('View on Google Docs')) return false;
-
-            const lastFieldValue = m.embeds[0].fields[m.embeds[0].fields.length - 1]?.value;
-            if (!!lastFieldValue && lastFieldValue.includes('View on Google Docs')) return false;
-
-            return true;
-        });
-
-        return messageCollection;
-    }
-
-    public static async getLibraryStatus(client: MClient, channel: TextChannel | NewsChannel | ThreadChannel) {
-        const messageCollection = await ComboLibraryManager.getLibraryChannelEmbeds(client, channel);
-
-        if (!messageCollection.size) return { status: LibraryStatuses.NOT_SYNCED };
-
-        // console.log(messageCollection);
-        const messages = [...messageCollection.values()].reverse();
-        const embeds = messages.map((m) => m.embeds[0]);
-
-        // console.log(embeds);
-
-        const doc = await client.comboLib.parseDoc();
-        if (!doc) throw new Error('Cannot open document');
-        const mo = await ComboLibraryManager.toDiscordEmbeds(ComboLibraryManager.parseCombos(doc));
-        const rEmbeds = mo.map((e) => e.embeds![0] as MessageEmbed);
-
-        const diff = ComboLibraryManager.compare(embeds, rEmbeds);
-
-        if (!diff || !diff.length) return { status: LibraryStatuses.UP_TO_DATE };
-
-        return {
-            status: LibraryStatuses.OUT_OF_DATE,
-            data: diff
-        };
-    }
-
-    public static async purgeLibrary(client: MClient, channel: TextChannel | NewsChannel | ThreadChannel) {
-        const messageCollection = await ComboLibraryManager.getLibraryChannelEmbeds(client, channel);
-
-        if (!messageCollection.size) throw new Error('No library found');
-
-        for (const m of messageCollection.values()) {
-            await m.delete();
-            await sleep(1000);
-        }
-    }
-
-    public static async updateLibrary(client: MClient, channel: TextChannel | NewsChannel | ThreadChannel) {
-        const messageCollection = await ComboLibraryManager.getLibraryChannelEmbeds(client, channel);
-
-        if (!messageCollection.size) {
-            const doc = await client.comboLib.parseDoc();
-            if (!doc) throw new Error('Cannot open document');
-            const mo = await ComboLibraryManager.toDiscordEmbeds(ComboLibraryManager.parseCombos(doc));
-
-            for (let i = 0; i < mo.length; i++) {
-                const embed = mo[i];
-                channel.send(embed);
-                await sleep(1000);
-            }
-            return { message: LibraryUpdateMessages.UPDATED };
-        }
-
-        // console.log(messageCollection);
-        const messages = [...messageCollection.values()].reverse();
-        const embeds = messages.map((m) => m.embeds[0]);
-
-        // console.log(embeds);
-
-        const doc = await client.comboLib.parseDoc();
-        if (!doc) throw new Error('Cannot open document');
-        const mo = await ComboLibraryManager.toDiscordEmbeds(ComboLibraryManager.parseCombos(doc));
-        const rEmbeds = mo.map((e) => e.embeds![0] as MessageEmbed);
-
-        if (embeds.length !== rEmbeds.length) {
-            for (const m of messageCollection.values()) {
-                await m.delete();
-                await sleep(1000);
-            }
-
-            for (let i = 0; i < mo.length; i++) {
-                const embed = mo[i];
-                channel.send(embed);
-                await sleep(1000);
-            }
-            return { message: LibraryUpdateMessages.UPDATED };
-        }
-
-        const diff = ComboLibraryManager.compare(embeds, rEmbeds);
-
-
-
-        if (!diff.length) return { message: LibraryUpdateMessages.ALREADY_UP_TO_DATE };
-
-
-        for (let i = 0; i < diff.length; i++) {
-            const edit = {
-                embeds: (mo[diff[i]].embeds as MessageEmbed[]),
-                files: mo[diff[i]].files,
-                attachments: []
-            } as MessageEditOptions;
-
-            messages[diff[i]].edit(edit);
-            await sleep(1000);
-        }
-
-        return { message: LibraryUpdateMessages.UPDATED };
-    }
-
-    private static async getVideoThumbnail(docElement: DocElement) {
-        // console.log(docElement);
-        const elements = docElement.elements;
-
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
-            if (element.link) {
-                if (element.link.includes('streamable')) {
-                    const parsed = element.link.match(/https:\/\/streamable\.com\/(\w+)/);
-                    if (parsed && parsed[1]) {
-                        const id = parsed[1];
-                        // console.log(id);
-
-                        try {
-                            const res = await axios.get(`https://api.streamable.com/videos/${id}`);
-
-                            const thumbnail_url = res.data.thumbnail_url;
-                            if (thumbnail_url) return `https:${thumbnail_url}`;
-                        } catch (err) {
-                            console.log(err);
-                        }
-                    }
-                }
-
-                if (element.link.includes('youtu')) {
-                    const parsed = element.link.match(/(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)&?/);
-                    if (parsed && parsed[1]) {
-                        const id = parsed[1];
-                        // console.log(id);
-
-                        try {
-                            const res = await axios.get(`https://www.youtube.com/oembed?url=https://youtu.be/${id}&format=json`);
-
-                            const thumbnail_url = res.data.thumbnail_url;
-                            if (thumbnail_url) return thumbnail_url.replace('hqdefault', 'maxresdefault');
-                        } catch (err) {
-                            console.log(err);
-                        }
-                    }
-                }
-            }
-        }
-
-        return undefined;
     }
 }

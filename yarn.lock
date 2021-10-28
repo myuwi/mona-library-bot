@@ -650,7 +650,14 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-spawn@^7.0.2:
+cross-env@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-7.0.3.tgz#865264b29677dc015ba8418918965dd232fc54cf"
+  integrity sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==
+  dependencies:
+    cross-spawn "^7.0.1"
+
+cross-spawn@^7.0.1, cross-spawn@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
   integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
@@ -1367,7 +1374,7 @@ google-p12-pem@^3.0.3:
   dependencies:
     node-forge "^0.10.0"
 
-googleapis-common@^5.0.1, googleapis-common@^5.0.2:
+googleapis-common@^5.0.1:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/googleapis-common/-/googleapis-common-5.0.3.tgz#9580944e538029687a4e25726afea4a1a535ac6f"
   integrity sha512-8khlXblLyT9UpB+NTZzrWfKQUW6U7gO6WnfJp51WrLgpzP7zkO+OshwtdArq8z2afj37jdrhbIT8eAxZLdwvwA==
@@ -1378,14 +1385,6 @@ googleapis-common@^5.0.1, googleapis-common@^5.0.2:
     qs "^6.7.0"
     url-template "^2.0.8"
     uuid "^8.0.0"
-
-googleapis@^81.0.0:
-  version "81.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-81.0.0.tgz#7a111598d9fe3f740add5dbdc7ec72eedd971ae5"
-  integrity sha512-PV4A3PWbOFkm44k4jk1I4ixFsfwc9dZWthfyGkU3322l0HMx2AYIuYqqN9vqQPlD734fTz4MOetETtQ0pH4KTg==
-  dependencies:
-    google-auth-library "^7.0.2"
-    googleapis-common "^5.0.2"
 
 graceful-fs@^4.1.2:
   version "4.2.6"

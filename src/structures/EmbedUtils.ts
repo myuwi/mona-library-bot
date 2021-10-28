@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { config } from '../../config';
+import { colors } from '../colors';
 
 export const singleLineEmbed = (message: string, status?: 'INFO' | 'SUCCESS' | 'ERROR') => {
     let icon;
@@ -7,16 +7,16 @@ export const singleLineEmbed = (message: string, status?: 'INFO' | 'SUCCESS' | '
     switch (status) {
         case 'SUCCESS':
             icon = '<:checkmark:895744617696346212>';
-            color = config.colors.success;
+            color = colors.success;
             break;
         case 'ERROR':
             icon = '<:alert:895742534914019388>';
-            color = config.colors.error;
+            color = colors.error;
             break;
         case 'INFO':
         default:
             // icon = '<:info:896484880169443428>';
-            color = config.colors.primary;
+            color = colors.primary;
     }
 
     const m = icon ? `${icon} ${String.fromCharCode(8203)} ${String.fromCharCode(8203)} ${message}` : message;
