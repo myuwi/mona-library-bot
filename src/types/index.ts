@@ -25,12 +25,9 @@ export type Command = {
     run: (message: Message, args: string[], client: MClient) => Promise<unknown>;
 }
 
-export type CommandArg = {
-    name: string;
-    description?: string;
-    type: CommandArgType;
-    required?: boolean;
-    args?: CommandArg[];
+export type Config = {
+    'token': string;
+    'documentId': string;
+    'ownerId': string;
+    'defaultPrefix': string;
 }
-
-export type CommandArgType = 'STRING' | 'NUMBER' | 'BOOLEAN' | 'USER' | 'ROLE' | 'CHANNEL';

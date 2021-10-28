@@ -17,7 +17,7 @@ export const testPermissions = async (command: Command, member: GuildMember) => 
         const userOverrides = (await client.db.guilds.permissions.users.getByUserId(member.guild.id, member.id))
             .filter((o) => o.userId === member.id);
 
-        console.log(userOverrides);
+        // console.log(userOverrides);
 
         if (userOverrides.length) {
             const override = userOverrides.find((o) => o.commandName === command.name)

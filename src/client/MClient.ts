@@ -6,7 +6,7 @@ import { Events } from '../structures/Events';
 import { db } from '../database/db';
 import { createSchema } from '../database/schema';
 import { colors } from '../colors';
-import * as config from '../../config.json';
+import { config } from '../load-config';
 
 export class MClient extends Client {
     public commands: CommandManager;
