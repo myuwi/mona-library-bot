@@ -23,7 +23,7 @@ export class Events extends BaseLoader {
         for (const eventFile of eventFiles) {
             if (!/\.(t|j)s$/.test(eventFile)) continue;
 
-            const eventName = eventFile.split('.')[0].split('\\').pop();
+            const eventName = eventFile.split('.')[0].replace('\\', '/').split('/').pop();
             if (!eventName || !discordEvents.includes(eventName)) continue;
 
             console.log(`Loading Event: ${eventName}`);
