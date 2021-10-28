@@ -7,11 +7,11 @@
 	"private": true,
 	"scripts": {
 		"start": "cross-env NODE_ENV=production node dist/bot.js",
+		"start:dev": "cross-env NODE_ENV=development node dist/bot.js",
 		"dev": "cross-env NODE_ENV=development ts-node src/bot.ts",
 		"dev:r": "cross-env NODE_ENV=development ts-node-dev src/bot.ts",
 		"eslint-fix": "eslint . --fix --ext .ts",
-		"build": "tsc -p .",
-		"pm2": "cross-env NODE_ENV=production pm2 start ts-node -- ts-node src/bot.ts --transpile-only"
+		"build": "tsc -p ."
 	},
 	"dependencies": {
 		"@googleapis/docs": "^0.2.0",
