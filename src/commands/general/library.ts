@@ -27,6 +27,10 @@ export const command: Command = {
 
         switch (operation) {
             case 'update': {
+                if (options[0] === 'dir') {
+                    return await guildLibraryManager.updateDirectory();
+                }
+
                 try {
                     const statusMessage = await message.channel.send({
                         embeds: [
@@ -35,6 +39,13 @@ export const command: Command = {
                     });
 
                     const resId = await guildLibraryManager.update();
+
+                    try {
+                        await guildLibraryManager.updateDirectory();
+                    } catch (err: any) {
+                        console.error(err.toString());
+                        await message.channel.send({ embeds: [EmbedUtils.error('Unable to update directory channel: ' + err.message)] });
+                    }
 
                     const messages = {
                         [LibraryUpdateResponse.CHANNEL_NOT_SET]:
@@ -49,7 +60,7 @@ export const command: Command = {
                         await statusMessage.edit({ embeds: [messages[resId]] });
                     }
                 } catch (err: any) {
-                    console.log(err.toString());
+                    console.error(err.toString());
 
                     await message.channel.send({
                         embeds: [
@@ -119,7 +130,8 @@ export const command: Command = {
                     .setFooter(client.user!.username)
                     .setTimestamp(Date.now())
                     .addField('Status', status)
-                    .addField('Library Channel', guildSettings?.sync_channel_id ? `<#${guildSettings.sync_channel_id}>` : 'Unset', true);
+                    .addField('Library Channel', guildSettings?.sync_channel_id ? `<#${guildSettings.sync_channel_id}>` : 'Unset', true)
+                    .addField('Directory Channel', guildSettings?.directory_channel_id ? `<#${guildSettings.directory_channel_id}>` : 'Unset', true);
                 // .addField('Log Channel', guildSettings?.log_channel_id ? `<#${guildSettings.log_channel_id}>` : 'Unset', true)
                 // .addField('Auto Sync', guildSettings?.auto_sync ? 'Enabled' : 'Disabled', true);
 
@@ -197,6 +209,81 @@ export const command: Command = {
                     await client.db.guilds.settings.update(message.guild!.id, { sync_channel_id: null });
 
                     return statusMessage.edit({ embeds: [EmbedUtils.success('The combo library has been unbound')] });
+                }
+                break;
+            }
+            // TODO: Refactor duplicate code
+            case 'directory': {
+                if (!options[0]) {
+                    const guildSettings = await client.db.guilds.settings.get(message.guild!.id);
+                    const channelId = guildSettings?.directory_channel_id;
+
+                    if (channelId) {
+                        const embed = EmbedUtils.info(`The combo library directory is currently linked to <#${channelId}>`);
+                        return message.channel.send({ embeds: [embed] });
+                    } else {
+                        const embed = EmbedUtils.info('The combo library directory isn\'t currently linked to a channel');
+                        return message.channel.send({ embeds: [embed] });
+                    }
+                }
+
+                if (options[0] === 'set') {
+                    let channelId;
+                    if (options[1]) {
+                        if (!(/^\d+$/.test(options[1]))) {
+                            const embed = EmbedUtils.error('Malformed channel id');
+
+                            return message.channel.send({ embeds: [embed] });
+                        }
+
+                        try {
+                            const fChannels = await message.guild!.channels.fetch();
+
+                            const fChannel = fChannels.get(options[1]);
+
+                            if (!fChannel) {
+                                const embed = EmbedUtils.error('A channel with the specified id could not be found on this server');
+
+                                return message.channel.send({ embeds: [embed] });
+                            }
+
+                            if (fChannel.type !== 'GUILD_TEXT') {
+                                const embed = EmbedUtils.error('The channel with the specified id isn\'t a text channel');
+
+                                return message.channel.send({ embeds: [embed] });
+                            }
+
+                            channelId = fChannel.id;
+                        } catch (err: any) {
+                            console.log(err);
+
+                            const embed = EmbedUtils.error('An unspecified error occurred, check the error log');
+
+                            return message.channel.send({ embeds: [embed] });
+                        }
+                    } else {
+                        channelId = message.channel.id;
+                    }
+
+                    await client.db.guilds.settings.update(message.guild!.id, { directory_channel_id: channelId });
+
+                    return await message.channel.send({
+                        embeds: [
+                            EmbedUtils.success(`The combo library directory has been bound to <#${channelId}>`)
+                        ]
+                    });
+                } else if (options[0] === 'unset') {
+                    const statusMessage = await message.channel.send({
+                        embeds: [
+                            EmbedUtils.info('Unbinding directory channel, please wait...')
+                        ]
+                    });
+
+                    // await guildLibraryManager.purge();
+
+                    await client.db.guilds.settings.update(message.guild!.id, { directory_channel_id: null });
+
+                    return statusMessage.edit({ embeds: [EmbedUtils.success('The combo library directory channel has been unbound')] });
                 }
                 break;
             }

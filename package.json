@@ -6,12 +6,15 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"start": "cross-env NODE_ENV=production node dist/bot.js",
+		"start:prod": "cross-env NODE_ENV=production node dist/bot.js",
 		"start:dev": "cross-env NODE_ENV=development node dist/bot.js",
 		"dev": "cross-env NODE_ENV=development ts-node src/bot.ts",
 		"dev:r": "cross-env NODE_ENV=development ts-node-dev src/bot.ts",
 		"eslint-fix": "eslint . --fix --ext .ts",
-		"build": "tsc -p ."
+		"build": "tsc -p .",
+		"knex:migrate:make": "knex --knexfile src/database/knexfile.ts migrate:make -x ts",
+		"knex:migrate:latest": "knex --knexfile src/database/knexfile.ts migrate:latest",
+		"knex:migrate:rollback": "knex --knexfile src/database/knexfile.ts migrate:rollback"
 	},
 	"dependencies": {
 		"@googleapis/docs": "^0.2.0",

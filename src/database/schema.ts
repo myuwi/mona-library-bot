@@ -1,4 +1,4 @@
-import { knex } from './db';
+import { knex } from './knexFile';
 
 export type DbGuild = {
     id: string;
@@ -6,6 +6,7 @@ export type DbGuild = {
     auto_sync: boolean | null;
     sync_channel_id: string | null;
     log_channel_id: string | null;
+    directory_channel_id: string | null;
 };
 
 export type DbRolePermissionOverride = {
@@ -29,6 +30,7 @@ export const createSchema = () => knex.schema
         t.boolean('auto_sync');
         t.string('sync_channel_id', 32);
         t.string('log_channel_id', 32);
+        t.string('directory_channel_id', 32);
     })
     .createTable('role_permission_overrides', (t) => {
         t.string('guildId', 32).notNullable();

@@ -3,7 +3,7 @@
 ## Requirements
 
 1. Discord Bot Token
-2. Google Docs API
+2. Access to the Google Docs API
 3. Node `v16.6` or higher
 
 ## Installation

@@ -1,14 +1,5 @@
-import Knex from 'knex';
-import { Command } from '../types';
+import { knex } from './knexFile';
 import { DbGuild, DbRolePermissionOverride, DbUserPermissionOverride } from './schema';
-
-export const knex = Knex({
-    client: 'sqlite3',
-    useNullAsDefault: true,
-    connection: {
-        filename: './db.sqlite'
-    }
-});
 
 export const db = {
     knex,
