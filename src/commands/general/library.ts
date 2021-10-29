@@ -9,7 +9,7 @@ export const command: Command = {
     name: 'library',
     description: 'Manage the combo library on the current channel',
     group: 'General',
-    usage: 'library <update | status | purge | channel [set <channel id> | unset]>',
+    usage: 'library <update | status | purge | [channel | directory] [set <channel id> | unset]>',
     permissionLevel: PermissionLevel.MODERATOR,
     run: async (message: Message, args: string[], client: MClient) => {
         if (!args.length) return message.channel.send('No args');
