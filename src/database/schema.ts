@@ -1,4 +1,4 @@
-import { knex } from './knexFile';
+import { knex } from './knexfile';
 
 export type DbGuild = {
     id: string;

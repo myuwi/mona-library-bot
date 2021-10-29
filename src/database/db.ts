@@ -1,4 +1,4 @@
-import { knex } from './knexFile';
+import { knex } from './knexfile';
 import { DbGuild, DbRolePermissionOverride, DbUserPermissionOverride } from './schema';
 
 export const db = {
