@@ -58,12 +58,7 @@ export class ComboLibraryManager extends DocParser {
         }
     }
 
-    public parseCombos(
-        elements: DocElement[],
-        options = {
-            sanitizeNewLines: true
-        }
-    ) {
+    public parseCombos(elements: DocElement[]) {
         const comboLibrary: ComboLibrary = {
             categories: []
         };
@@ -109,16 +104,14 @@ export class ComboLibraryManager extends DocParser {
                     break;
                 }
 
-                if (options.sanitizeNewLines) {
-                    // remove empty lines from the start
-                    while (desc[0].rawText === '') {
-                        desc.shift();
-                    }
+                // remove empty lines from the start
+                while (desc[0].rawText === '') {
+                    desc.shift();
+                }
 
-                    // remove empty lines from the end
-                    while (desc[desc.length - 1].rawText === '') {
-                        desc.pop();
-                    }
+                // remove empty lines from the end
+                while (desc[desc.length - 1].rawText === '') {
+                    desc.pop();
                 }
 
                 comboCategory.description = desc;
@@ -164,14 +157,12 @@ export class ComboLibraryManager extends DocParser {
                 }
 
                 // Remove empty lines from the start and the end of the description
-                if (options.sanitizeNewLines) {
-                    while (desc[0].rawText === '') {
-                        desc.shift();
-                    }
+                while (desc[0].rawText === '') {
+                    desc.shift();
+                }
 
-                    while (desc[desc.length - 1].rawText === '') {
-                        desc.pop();
-                    }
+                while (desc[desc.length - 1].rawText === '') {
+                    desc.pop();
                 }
 
                 combo.description = desc;
