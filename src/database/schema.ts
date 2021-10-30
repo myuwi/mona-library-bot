@@ -3,9 +3,7 @@ import { knex } from './knexfile';
 export type DbGuild = {
     id: string;
     prefix: string | null;
-    auto_sync: boolean | null;
     sync_channel_id: string | null;
-    log_channel_id: string | null;
     directory_channel_id: string | null;
 };
 
@@ -27,9 +25,7 @@ export const createSchema = () => knex.schema
     .createTable('guilds', (t) => {
         t.string('id', 32).notNullable().primary().unique();
         t.string('prefix', 8);
-        t.boolean('auto_sync');
         t.string('sync_channel_id', 32);
-        t.string('log_channel_id', 32);
         t.string('directory_channel_id', 32);
     })
     .createTable('role_permission_overrides', (t) => {
