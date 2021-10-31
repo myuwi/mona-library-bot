@@ -255,6 +255,37 @@ export class GuildComboLibraryManager {
         return LibraryPurgeResponse.SUCCESS;
     }
 
+    public async purgeDirectory(
+        deleteCallback?: (i?: number, messages?: Message[]) => unknown | Promise<unknown>
+    ) {
+        const directoryChannel = await this.getDirectoryChannel();
+        if (!directoryChannel) return LibraryPurgeResponse.CHANNEL_NOT_SET;
+
+        const directoryChannelMessages = await directoryChannel.messages.fetch();
+        directoryChannelMessages.sweep((m) => {
+            if (m.author.id !== this.client.user!.id) return true;
+            if (!m.embeds.length) return true;
+            return false;
+        });
+
+        if (!directoryChannelMessages.size) return LibraryPurgeResponse.NOT_FOUND;
+
+        const messages = [...directoryChannelMessages.values()];
+
+        for (let i = 0; i < messages.length; i++) {
+            const m = messages[i];
+
+            await m.delete();
+
+            if (i < messages.length - 1)
+                await sleep(1000);
+
+            !!deleteCallback && await deleteCallback(i, messages);
+        }
+
+        return LibraryPurgeResponse.SUCCESS;
+    }
+
     public async updateDirectory() {
         const libraryChannel = await this.getLibraryChannel();
         if (!libraryChannel) throw new Error('Library channel not set');
