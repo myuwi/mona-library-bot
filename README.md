@@ -1,12 +1,8 @@
 # Mona Combo Library Bot
 
-## Requirements
-
-1. Discord Bot Token
-2. Access to the Google Docs API
-3. Node `v16.6` or higher
-
 ## Installation
+
+Node version 16.6.0+ is required
 
 ```sh
 git clone https://github.com/myuwi/mona-library-bot.git
