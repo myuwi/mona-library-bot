@@ -31,7 +31,7 @@ export class ThumbnailGenerator {
                 },
                 {
                     input: `./assets/names/${fileName}.png`,
-                    top: 288 - 4,
+                    top: 288,
                     left: x
                 }
             ];
@@ -55,7 +55,7 @@ export class ThumbnailGenerator {
                 },
                 {
                     input: './assets/names/Empty.png',
-                    top: 288 - 4,
+                    top: 288,
                     left: x
                 }
             ];

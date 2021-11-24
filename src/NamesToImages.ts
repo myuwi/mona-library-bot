@@ -9,7 +9,6 @@ import { Character, Characters, getCharacterFileName } from './GenshinData';
             name: 'Empty',
             displayName: '--',
             rarity: 1
-
         },
         ...Characters
     ];
@@ -26,11 +25,10 @@ import { Character, Characters, getCharacterFileName } from './GenshinData';
             bgColor: '#00000000',
             textColor: '#4f4e57',
             textAlign: 'center',
-            verticalAlign: 'center',
             customHeight: 56,
             lineHeight: 56,
             maxWidth: 256,
-            margin: 0,
+            margin: 6,
         });
 
         const fileName = getCharacterFileName(char);
