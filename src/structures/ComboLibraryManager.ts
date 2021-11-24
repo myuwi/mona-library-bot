@@ -1,7 +1,7 @@
 import { DocParser, DocElement } from './DocParser';
 import { EmbedFieldData, Guild, MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
-import { GenshinData } from '../GenshinData';
-import { ThumbnailGenerator } from './ThumbnailGenerator';
+import { Characters, parseCharacters } from '../GenshinData';
+import { ThumbnailGenerator } from '../ThumbnailGenerator';
 import { MClient } from '../client/MClient';
 import { GuildComboLibraryManager } from './GuildComboLibraryManager';
 
@@ -199,8 +199,8 @@ export class ComboLibraryManager extends DocParser {
                             for (let j = 0; j < field.value.length; j++) {
                                 const line = field.value[j];
 
-                                for (let k = 0; k < GenshinData.length; k++) {
-                                    const characterName = GenshinData[k].name;
+                                for (let k = 0; k < Characters.length; k++) {
+                                    const characterName = Characters[k].name;
 
                                     if (line.rawText.toUpperCase().startsWith(characterName.toUpperCase())) {
                                         combo.members.push(characterName);
@@ -350,7 +350,8 @@ export class ComboLibraryManager extends DocParser {
                 };
 
                 if (combo.members.length) {
-                    const image = await ThumbnailGenerator.abyss(combo.members);
+                    const members = parseCharacters(combo.members);
+                    const image = await ThumbnailGenerator.abyss(members);
 
                     const imageName = combo.members.map((m) => m.toLowerCase().replace(' ', '')).join('-');
 
