@@ -1,4 +1,4 @@
-import { HexColorString, Message } from 'discord.js';
+import { Message } from 'discord.js';
 import { MClient } from '../client/MClient';
 import { PermissionLevel } from '../structures/Permissions';
 
