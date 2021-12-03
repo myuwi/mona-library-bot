@@ -1,6 +1,6 @@
 import { DocParser, DocElement } from './DocParser';
 import { EmbedFieldData, Guild, MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
-import { Characters, parseCharacter, parseCharacters } from '../GenshinData';
+import { Character, Characters, parseCharacter, parseCharacters } from '../GenshinData';
 import { ThumbnailGenerator } from '../ThumbnailGenerator';
 import { MClient } from '../client/MClient';
 import { GuildComboLibraryManager } from './GuildComboLibraryManager';
@@ -20,7 +20,7 @@ export type Combo = {
     name: string;
     submittedBy?: string;
     description: DocElement[];
-    members: string[];
+    members: Character[];
     headingId?: string;
     fields: ComboField[];
 };
@@ -200,7 +200,7 @@ export class ComboLibraryManager extends DocParser {
                                 const char = parseCharacter(charName);
 
                                 if (char) {
-                                    combo.members.push(char.name);
+                                    combo.members.push(char);
                                 }
                             }
                         }
@@ -349,10 +349,14 @@ export class ComboLibraryManager extends DocParser {
 
                 if (combo.members.length) {
                     console.log(combo.members);
-                    const members = parseCharacters(combo.members);
-                    const image = await ThumbnailGenerator.abyss(members);
+                    const image = await ThumbnailGenerator.abyss(combo.members);
 
-                    const imageName = combo.members.map((m) => m.toLowerCase().replace(' ', '')).join('-');
+                    const imageName = combo.members
+                        .map((m) => {
+                            const name = m.displayName ?? m.name;
+                            return name.toLowerCase().replace(' ', '');
+                        })
+                        .join('-');
 
                     if (image) {
                         messageOptions.files = [new MessageAttachment(image, `${imageName}.png`)];

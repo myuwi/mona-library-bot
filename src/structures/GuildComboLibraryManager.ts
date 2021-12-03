@@ -145,7 +145,8 @@ export class GuildComboLibraryManager {
                 embed1.description !== embed2.description ||
                 embed1.footer?.text !== embed2.footer?.text ||
                 embed1.fields.length !== embed2.fields.length ||
-                embed1.fields.some((f, i) => f.name !== embed2.fields[i].name || f.value !== embed2.fields[i].value)
+                embed1.fields.some((f, i) => f.name !== embed2.fields[i].name || f.value !== embed2.fields[i].value) ||
+                embed1.image?.url.split('/').pop() !== embed2.image?.url.split('/').pop()
             ) {
                 diff.push(i);
             }
