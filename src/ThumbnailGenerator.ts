@@ -17,23 +17,23 @@ export class ThumbnailGenerator {
                 {
                     input: `./assets/Rarity_${char.rarity}.png`,
                     top: 32,
-                    left: x
+                    left: x,
                 },
                 {
                     input: `./assets/portraits/${fileName}.png`,
                     top: 32,
-                    left: x
+                    left: x,
                 },
                 {
                     input: './assets/Name_Background.png',
                     top: 32,
-                    left: x
+                    left: x,
                 },
                 {
                     input: `./assets/names/${fileName}.png`,
                     top: 288,
-                    left: x
-                }
+                    left: x,
+                },
             ];
 
             return [...acc, ...charComps];
@@ -46,18 +46,18 @@ export class ThumbnailGenerator {
                 {
                     input: './assets/Rarity_1.png',
                     top: 32,
-                    left: x
+                    left: x,
                 },
                 {
                     input: './assets/Name_Background.png',
                     top: 32,
-                    left: x
+                    left: x,
                 },
                 {
                     input: './assets/names/Empty.png',
                     top: 288,
-                    left: x
-                }
+                    left: x,
+                },
             ];
 
             comps = [...comps, ...emptyComps];
@@ -65,10 +65,7 @@ export class ThumbnailGenerator {
 
         const background = './assets/Abyss_Background.png';
 
-        const buffer = sharp(background)
-            .composite(comps)
-            .png()
-            .toBuffer();
+        const buffer = sharp(background).composite(comps).png().toBuffer();
 
         return buffer;
     }

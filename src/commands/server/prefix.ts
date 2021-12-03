@@ -9,7 +9,6 @@ export const command: Command = {
     group: 'Server',
     permissionLevel: PermissionLevel.MODERATOR,
     run: async (message: Message, args: string[], client: MClient) => {
-
         if (args[0] === 'set' && args[1]) {
             await client.db.guilds.settings.update(message.guild!.id, { prefix: args[1] });
             return message.channel.send(`The prefix has been changed to \`${args[1]}\``);
@@ -20,8 +19,8 @@ export const command: Command = {
             return message.channel.send(`The prefix has been reset to default (\`${client.config.defaultPrefix}\`)`);
         }
 
-        const prefix = await client.db.guilds.settings.getPrefix(message.guild!.id) || client.config.defaultPrefix;
+        const prefix = (await client.db.guilds.settings.getPrefix(message.guild!.id)) || client.config.defaultPrefix;
 
         message.channel.send(`The prefix on the current server is \`${prefix}\``);
-    }
+    },
 };

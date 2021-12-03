@@ -60,7 +60,7 @@ export class ComboLibraryManager extends DocParser {
 
     public parseCombos(elements: DocElement[]) {
         const comboLibrary: ComboLibrary = {
-            categories: []
+            categories: [],
         };
 
         let combosStarted = false;
@@ -80,11 +80,10 @@ export class ComboLibraryManager extends DocParser {
 
             // category title
             if (element.style === 'HEADING_1' && element.rawText !== '') {
-
                 const comboCategory: ComboCategory = {
                     name: element.rawText,
                     description: [],
-                    combos: []
+                    combos: [],
                 };
 
                 if (element.headingId) {
@@ -126,7 +125,7 @@ export class ComboLibraryManager extends DocParser {
                     name: element.rawText,
                     description: [],
                     members: [],
-                    fields: []
+                    fields: [],
                 };
 
                 // Heading Id
@@ -178,7 +177,7 @@ export class ComboLibraryManager extends DocParser {
 
                         const field: ComboField = {
                             name: elText,
-                            value: []
+                            value: [],
                         };
 
                         // section content
@@ -227,10 +226,13 @@ export class ComboLibraryManager extends DocParser {
     }
 
     public async toDiscordEmbeds(comboLibrary: ComboLibrary) {
-        const assets: { [s: string]: string; } = {
-            'Vaporize Combos': 'https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png',
-            'Freeze Combos': 'https://cdn.discordapp.com/attachments/809845587905871914/878954338788180038/Namecard_Background_Ganyu_Qilin_188px.png',
-            'Electro-Charged Combos': 'https://cdn.discordapp.com/attachments/809845587905871914/878954346098872330/Namecard_Background_Beidou_Weighing_Anchor_188px.png'
+        const assets: { [s: string]: string } = {
+            'Vaporize Combos':
+                'https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png',
+            'Freeze Combos':
+                'https://cdn.discordapp.com/attachments/809845587905871914/878954338788180038/Namecard_Background_Ganyu_Qilin_188px.png',
+            'Electro-Charged Combos':
+                'https://cdn.discordapp.com/attachments/809845587905871914/878954346098872330/Namecard_Background_Beidou_Weighing_Anchor_188px.png',
         };
 
         const embeds: MessageOptions[] = [];
@@ -241,9 +243,7 @@ export class ComboLibraryManager extends DocParser {
 
             if (!category.combos.length) continue;
 
-            const embed = new MessageEmbed()
-                .setTitle(category.name)
-                .setColor('#5565f1');
+            const embed = new MessageEmbed().setTitle(category.name).setColor('#5565f1');
 
             if (assets[category.name]) {
                 embed.setImage(assets[category.name]);
@@ -263,7 +263,9 @@ export class ComboLibraryManager extends DocParser {
             }
 
             if (category.headingId) {
-                desc.push(`${ZERO_WIDTH_SPACE}\n[View on Google Docs](https://docs.google.com/document/d/${this.documentId}/edit#heading=${category.headingId})`);
+                desc.push(
+                    `${ZERO_WIDTH_SPACE}\n[View on Google Docs](https://docs.google.com/document/d/${this.documentId}/edit#heading=${category.headingId})`
+                );
             }
 
             embed.setDescription(desc.join('\n'));
@@ -275,9 +277,7 @@ export class ComboLibraryManager extends DocParser {
                 const combo = category.combos[j];
                 // console.log(combo);
 
-                const embed = new MessageEmbed()
-                    .setTitle(combo.name)
-                    .setColor('#5565f1');
+                const embed = new MessageEmbed().setTitle(combo.name).setColor('#5565f1');
 
                 if (combo.submittedBy) {
                     embed.setFooter(`Submitted by ${combo.submittedBy}`);
@@ -317,7 +317,7 @@ export class ComboLibraryManager extends DocParser {
 
                     const embedField: EmbedFieldData = {
                         name: field.name,
-                        value: lines.join('\n')
+                        value: lines.join('\n'),
                     };
 
                     embedFields.push(embedField);
@@ -335,7 +335,9 @@ export class ComboLibraryManager extends DocParser {
                     // }
                 }
 
-                const headerLink = combo.headingId && `[View on Google Docs](https://docs.google.com/document/d/${this.documentId}/edit#heading=${combo.headingId})`;
+                const headerLink =
+                    combo.headingId &&
+                    `[View on Google Docs](https://docs.google.com/document/d/${this.documentId}/edit#heading=${combo.headingId})`;
 
                 // add link to the end of the last field
                 if (headerLink) {
@@ -346,7 +348,7 @@ export class ComboLibraryManager extends DocParser {
                 embed.addFields(embedFields);
 
                 const messageOptions: MessageOptions = {
-                    embeds: [embed]
+                    embeds: [embed],
                 };
 
                 if (combo.members.length) {
@@ -372,8 +374,10 @@ export class ComboLibraryManager extends DocParser {
         const embed = new MessageEmbed()
             .setTitle('Mona Combo Library')
             .setColor('#5565f1')
-            .setImage('https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png')
-            .setFooter('Please DM Myuwi#0001 if there\'s any trouble with the bot.');
+            .setImage(
+                'https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png'
+            )
+            .setFooter("Please DM Myuwi#0001 if there's any trouble with the bot.");
 
         // combo categories
         for (let i = 0; i < comboLibrary.categories.length; i++) {
@@ -381,7 +385,7 @@ export class ComboLibraryManager extends DocParser {
 
             const field: EmbedFieldData = {
                 name: category.name,
-                value: ''
+                value: '',
             };
 
             const comboLinks = [];
@@ -392,7 +396,9 @@ export class ComboLibraryManager extends DocParser {
                 // console.log(combo);
 
                 if (combo.headingId) {
-                    comboLinks.push(`‣ [${combo.name}](https://docs.google.com/document/d/${this.documentId}/edit#heading=${combo.headingId})`);
+                    comboLinks.push(
+                        `‣ [${combo.name}](https://docs.google.com/document/d/${this.documentId}/edit#heading=${combo.headingId})`
+                    );
                 }
             }
 

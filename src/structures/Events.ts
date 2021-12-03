@@ -22,7 +22,7 @@ export class Events extends BaseLoader {
 
         for (const eventFile of eventFiles) {
             if (!/\.(t|j)s$/.test(eventFile)) continue;
-            
+
             const eventName = path.parse(eventFile).name;
             if (!eventName || !discordEvents.includes(eventName)) continue;
 

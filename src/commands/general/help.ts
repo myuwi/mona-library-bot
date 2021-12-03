@@ -11,17 +11,17 @@ export const command: Command = {
     examples: [
         {
             value: 'help',
-            description: 'Shows a list of all commands'
+            description: 'Shows a list of all commands',
         },
         {
             value: 'help prefix',
-            description: 'Shows help for the prefix command'
-        }
+            description: 'Shows help for the prefix command',
+        },
     ],
     permissionLevel: PermissionLevel.MEMBER,
     run: async (message: Message, args: string[], client: MClient) => {
         const command = args[0] && client.commands.get(args[0]);
-        const prefix = await client.db.guilds.settings.getPrefix(message.guildId!) || client.config.defaultPrefix;
+        const prefix = (await client.db.guilds.settings.getPrefix(message.guildId!)) || client.config.defaultPrefix;
 
         if (command) {
             const embed = new MessageEmbed()
@@ -53,8 +53,7 @@ export const command: Command = {
 
         const groupedCommands = new Collection<String, Command[]>();
 
-        const commands = client.commands.toArray()
-            .filter((c) => !c.hidden);
+        const commands = client.commands.toArray().filter((c) => !c.hidden);
 
         for (let i = 0; i < commands.length; i++) {
             const command = commands[i];
@@ -69,11 +68,12 @@ export const command: Command = {
             const cmds = group
                 .map((cmd) => {
                     return `\`${cmd.name}\``;
-                }).join(' ');
+                })
+                .join(' ');
 
             embed.addField(`${group[0].group} Commands`, cmds);
         }
 
         return message.channel.send({ embeds: [embed] });
-    }
+    },
 };

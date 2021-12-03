@@ -8,9 +8,9 @@ import { Character, Characters, getCharacterFileName } from './GenshinData';
         {
             name: 'Empty',
             displayName: '--',
-            rarity: 1
+            rarity: 1,
         },
-        ...Characters
+        ...Characters,
     ];
 
     for (let i = 0; i < data.length; i++) {

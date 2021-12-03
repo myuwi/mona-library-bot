@@ -21,41 +21,43 @@ export type DbUserPermissionOverride = {
     allow: boolean;
 };
 
-export const createSchema = () => knex.schema
-    .createTable('guilds', (t) => {
-        t.string('id', 32).notNullable().primary().unique();
-        t.string('prefix', 8);
-        t.string('sync_channel_id', 32);
-        t.string('directory_channel_id', 32);
-    })
-    .createTable('role_permission_overrides', (t) => {
-        t.string('guildId', 32).notNullable();
-        t.string('roleId', 32).notNullable();
-        t.string('commandName', 32).notNullable();
-        t.boolean('allow').notNullable();
+export const createSchema = () =>
+    knex.schema
+        .createTable('guilds', (t) => {
+            t.string('id', 32).notNullable().primary().unique();
+            t.string('prefix', 8);
+            t.string('sync_channel_id', 32);
+            t.string('directory_channel_id', 32);
+        })
+        .createTable('role_permission_overrides', (t) => {
+            t.string('guildId', 32).notNullable();
+            t.string('roleId', 32).notNullable();
+            t.string('commandName', 32).notNullable();
+            t.boolean('allow').notNullable();
 
-        t.foreign('guildId').references('guilds.id');
-        t.unique(['guildId', 'roleId', 'commandName']);
-    })
-    .createTable('user_permission_overrides', (t) => {
-        t.string('guildId', 32).notNullable();
-        t.string('userId', 32).notNullable();
-        t.string('commandName', 32).notNullable();
-        t.boolean('allow').notNullable();
+            t.foreign('guildId').references('guilds.id');
+            t.unique(['guildId', 'roleId', 'commandName']);
+        })
+        .createTable('user_permission_overrides', (t) => {
+            t.string('guildId', 32).notNullable();
+            t.string('userId', 32).notNullable();
+            t.string('commandName', 32).notNullable();
+            t.boolean('allow').notNullable();
 
-        t.foreign('guildId').references('guilds.id');
-        t.unique(['guildId', 'userId', 'commandName']);
-    })
-    .then(() => console.log(' * Schema created.'))
-    .catch((err: any) => {
-        if (!err.toString().toLowerCase().includes('table `guilds` already exists')) {
-            throw new Error(` ! ERROR while creating schema: ${err}`);
-        }
-    });
+            t.foreign('guildId').references('guilds.id');
+            t.unique(['guildId', 'userId', 'commandName']);
+        })
+        .then(() => console.log(' * Schema created.'))
+        .catch((err: any) => {
+            if (!err.toString().toLowerCase().includes('table `guilds` already exists')) {
+                throw new Error(` ! ERROR while creating schema: ${err}`);
+            }
+        });
 
-export const dropSchema = () => knex.schema
-    .dropTableIfExists('guilds')
-    .then(() => console.log(' * Dropped tables.'))
-    .catch((err: any) => {
-        console.log(err);
-    });
+export const dropSchema = () =>
+    knex.schema
+        .dropTableIfExists('guilds')
+        .then(() => console.log(' * Dropped tables.'))
+        .catch((err: any) => {
+            console.log(err);
+        });

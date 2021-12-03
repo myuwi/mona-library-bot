@@ -22,12 +22,12 @@ export const command: Command = {
     examples: [
         {
             value: 'permissions user 186854817560395778 prefix allow',
-            description: 'Allows a user to use the prefix command'
+            description: 'Allows a user to use the prefix command',
         },
         {
             value: 'permissions role 809802091768971355 ping deny',
-            description: 'Denies a role access to the ping command'
-        }
+            description: 'Denies a role access to the ping command',
+        },
     ],
     permissionLevel: PermissionLevel.BOT_OWNER,
     run: async (message: Message, args: string[], client: MClient) => {
@@ -36,15 +36,15 @@ export const command: Command = {
         if (!mode) {
             const roleOverrides = await client.db.guilds.permissions.roles.get(message.guild!.id);
 
-            const embed = new MessageEmbed()
-                .setTitle('Permissions overrides')
-                .setColor(client.colors.primary);
+            const embed = new MessageEmbed().setTitle('Permissions overrides').setColor(client.colors.primary);
 
             const roleOverrideArr = [];
 
             for (let i = 0; i < roleOverrides.length; i++) {
                 const override = roleOverrides[i];
-                roleOverrideArr.push(`<@&${override.roleId}> (${override.roleId}) ${override.commandName} ${override.allow ? 'allow' : 'deny'}`);
+                roleOverrideArr.push(
+                    `<@&${override.roleId}> (${override.roleId}) ${override.commandName} ${override.allow ? 'allow' : 'deny'}`
+                );
             }
 
             if (roleOverrideArr.length) {
@@ -56,7 +56,9 @@ export const command: Command = {
             const userOverrideArr = [];
             for (let i = 0; i < userOverrides.length; i++) {
                 const override = userOverrides[i];
-                userOverrideArr.push(`<@${override.userId}> (${override.userId}) ${override.commandName} ${override.allow ? 'allow' : 'deny'}`);
+                userOverrideArr.push(
+                    `<@${override.userId}> (${override.userId}) ${override.commandName} ${override.allow ? 'allow' : 'deny'}`
+                );
             }
 
             if (userOverrideArr.length) {
@@ -119,11 +121,15 @@ export const command: Command = {
         if (commandName !== '*') {
             const command = client.commands.get(commandName);
             if (!command) {
-                return await message.channel.send({ embeds: [EmbedUtils.error(`A command with the name \`${commandName}\` could not be found`)] });
+                return await message.channel.send({
+                    embeds: [EmbedUtils.error(`A command with the name \`${commandName}\` could not be found`)],
+                });
             }
 
             if (command.permissionLevel === PermissionLevel.BOT_OWNER) {
-                return await message.channel.send({ embeds: [EmbedUtils.error('The permissions of commands with a permission level of `BOT_OWNER` cannot be overridden!')] });
+                return await message.channel.send({
+                    embeds: [EmbedUtils.error('The permissions of commands with a permission level of `BOT_OWNER` cannot be overridden!')],
+                });
             }
         }
 
@@ -180,5 +186,5 @@ export const command: Command = {
 
         const embed = EmbedUtils.success(msg);
         return message.channel.send({ embeds: [embed] });
-    }
+    },
 };

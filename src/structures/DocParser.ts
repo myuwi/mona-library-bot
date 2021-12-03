@@ -5,10 +5,10 @@ export type TextElement = {
     bold?: boolean;
     underline?: boolean;
     link?: string;
-}
+};
 
 export class DocElement {
-    public elements: TextElement[]
+    public elements: TextElement[];
     public headingId?: string;
     public style?: string;
     public bullet?: string;
@@ -57,14 +57,14 @@ export class DocParser {
         console.log('Initializing doc parser');
         const auth = new docs.auth.GoogleAuth({
             keyFilename: 'google-api-credentials.json',
-            scopes: ['https://www.googleapis.com/auth/documents']
+            scopes: ['https://www.googleapis.com/auth/documents'],
         });
 
         const authClient = await auth.getClient();
 
         const client = docs.docs({
             version: 'v1',
-            auth: authClient
+            auth: authClient,
         });
 
         this.apiClient = client;
@@ -73,11 +73,11 @@ export class DocParser {
     }
 
     private async fetchDocument() {
-        const client = this.apiClient || await this.init();
+        const client = this.apiClient || (await this.init());
 
         console.log(`Fetching document with id '${this.documentId}'`);
         const res = await client.documents.get({
-            documentId: this.documentId
+            documentId: this.documentId,
         });
 
         return res.data;
@@ -164,7 +164,6 @@ export class DocParser {
                     if (bulletStyle.glyphSymbol) {
                         data.bullet = bulletStyle.glyphSymbol;
                     } else if (bulletStyle.glyphType === 'DECIMAL' && typeof bulletStyle.startNumber === 'number') {
-
                         // if not first item in the current list
                         if (typeof listIndexes[bulletListId] === 'number') {
                             listIndexes[bulletListId]++;

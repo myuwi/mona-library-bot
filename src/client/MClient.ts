@@ -18,10 +18,7 @@ export class MClient extends Client {
 
     constructor() {
         super({
-            intents: [
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_MESSAGES
-            ]
+            intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
         });
         this.commands = new CommandManager();
         this.events = new Events(this);

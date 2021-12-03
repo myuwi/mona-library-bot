@@ -6,8 +6,7 @@ export const db = {
     guilds: {
         insert: async (guildId: string) => {
             try {
-                const rows = await knex<DbGuild>('guilds')
-                    .where({ id: guildId });
+                const rows = await knex<DbGuild>('guilds').where({ id: guildId });
 
                 if (rows.length) {
                     throw new Error('Insert failed - Guild already exists in the database');
@@ -21,18 +20,14 @@ export const db = {
             }
         },
         delete: async (guildId: string) => {
-            await knex<DbGuild>('guilds')
-                .where({ id: guildId })
-                .del();
+            await knex<DbGuild>('guilds').where({ id: guildId }).del();
         },
         settings: {
             get: async (guildId: string) => {
                 return await knex<DbGuild>('guilds').where('id', guildId).first();
             },
             getPrefix: async (guildId: string) => {
-                const settings = await knex<DbGuild>('guilds')
-                    .select('prefix')
-                    .where('id', guildId).first();
+                const settings = await knex<DbGuild>('guilds').select('prefix').where('id', guildId).first();
                 const prefix = settings?.prefix;
 
                 return prefix ? prefix : null;
@@ -40,32 +35,27 @@ export const db = {
             update: async (guildId: string, data: Partial<Omit<DbGuild, 'id'>>) => {
                 if ('id' in data) return;
 
-                await knex<DbGuild>('guilds')
-                    .where({ id: guildId })
-                    .update(data);
+                await knex<DbGuild>('guilds').where({ id: guildId }).update(data);
             },
         },
         permissions: {
             roles: {
                 get: async (guildId: string) => {
-                    return await knex<DbRolePermissionOverride>('role_permission_overrides')
-                        .where({ guildId });
+                    return await knex<DbRolePermissionOverride>('role_permission_overrides').where({ guildId });
                 },
                 getByRoleId: async (guildId: string, roleId: string) => {
-                    return await knex<DbRolePermissionOverride>('role_permission_overrides')
-                        .where({
-                            guildId,
-                            roleId
-                        });
+                    return await knex<DbRolePermissionOverride>('role_permission_overrides').where({
+                        guildId,
+                        roleId,
+                    });
                 },
                 update: async (guildId: string, roleId: string, commandName: string, allow: boolean | null) => {
-
                     if (allow === null) {
                         await knex<DbRolePermissionOverride>('role_permission_overrides')
                             .where({
                                 guildId,
                                 roleId,
-                                commandName
+                                commandName,
                             })
                             .del();
                         return;
@@ -75,8 +65,9 @@ export const db = {
                         .where({
                             guildId,
                             roleId,
-                            commandName
-                        }).first();
+                            commandName,
+                        })
+                        .first();
 
                     // Insert
                     if (!row) {
@@ -84,7 +75,7 @@ export const db = {
                             guildId,
                             roleId,
                             commandName,
-                            allow
+                            allow,
                         });
                         return;
                     }
@@ -96,22 +87,20 @@ export const db = {
                         .where({
                             guildId,
                             roleId,
-                            commandName
+                            commandName,
                         })
                         .update({ allow });
-                }
+                },
             },
             users: {
                 get: async (guildId: string) => {
-                    return await knex<DbUserPermissionOverride>('user_permission_overrides')
-                        .where({ guildId });
+                    return await knex<DbUserPermissionOverride>('user_permission_overrides').where({ guildId });
                 },
                 getByUserId: async (guildId: string, userId: string) => {
-                    return await knex<DbUserPermissionOverride>('user_permission_overrides')
-                        .where({
-                            guildId,
-                            userId
-                        });
+                    return await knex<DbUserPermissionOverride>('user_permission_overrides').where({
+                        guildId,
+                        userId,
+                    });
                 },
                 update: async (guildId: string, userId: string, commandName: string, allow: boolean | null) => {
                     if (allow === null) {
@@ -119,7 +108,7 @@ export const db = {
                             .where({
                                 guildId,
                                 userId,
-                                commandName
+                                commandName,
                             })
                             .del();
                         return;
@@ -129,8 +118,9 @@ export const db = {
                         .where({
                             guildId,
                             userId,
-                            commandName
-                        }).first();
+                            commandName,
+                        })
+                        .first();
 
                     // Insert
                     if (!row) {
@@ -138,7 +128,7 @@ export const db = {
                             guildId,
                             userId,
                             commandName,
-                            allow
+                            allow,
                         });
                         return;
                     }
@@ -150,11 +140,11 @@ export const db = {
                         .where({
                             guildId,
                             userId,
-                            commandName
+                            commandName,
                         })
                         .update({ allow });
-                }
-            }
-        }
-    }
+                },
+            },
+        },
+    },
 };

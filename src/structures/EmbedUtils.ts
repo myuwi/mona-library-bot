@@ -23,7 +23,7 @@ export const singleLineEmbed = (message: string, status?: 'INFO' | 'SUCCESS' | '
 
     return new MessageEmbed({
         color,
-        description: m
+        description: m,
     });
 };
 

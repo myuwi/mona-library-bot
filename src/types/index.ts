@@ -14,7 +14,7 @@ export type Command = {
     /** The command's usage */
     usage?: string;
     /** An array of usage examples for the command */
-    examples?: { value: string, description: string }[];
+    examples?: { value: string; description: string }[];
     /** Permissions required to use the command */
     permissionLevel: PermissionLevel;
     /** Is the command disabled? */
@@ -23,11 +23,11 @@ export type Command = {
     hidden?: boolean;
     /** The function to run when the command is executed */
     run: (message: Message, args: string[], client: MClient) => Promise<unknown>;
-}
+};
 
 export type Config = {
-    'token': string;
-    'documentId': string;
-    'ownerId': string;
-    'defaultPrefix': string;
-}
+    token: string;
+    documentId: string;
+    ownerId: string;
+    defaultPrefix: string;
+};

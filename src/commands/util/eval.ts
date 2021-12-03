@@ -9,10 +9,12 @@ export const command: Command = {
     description: 'Evaluates Javascript code.',
     group: 'Util',
     usage: 'eval <javascript code>',
-    examples: [{
-        value: 'eval return \'Hello World\'',
-        description: 'Evaluates the code and returns \'Hello World\''
-    }],
+    examples: [
+        {
+            value: "eval return 'Hello World'",
+            description: "Evaluates the code and returns 'Hello World'",
+        },
+    ],
     disabled: process.env.NODE_ENV !== 'development' ? true : false,
     permissionLevel: PermissionLevel.BOT_OWNER,
     hidden: true,
@@ -39,5 +41,5 @@ export const command: Command = {
 
             await message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err.toString())}\n\`\`\``);
         }
-    }
+    },
 };

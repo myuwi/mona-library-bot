@@ -14,5 +14,5 @@ export const command: Command = {
         const ping = Date.now() - date;
 
         msg.edit(`Ping: ${ping} ms`);
-    }
+    },
 };

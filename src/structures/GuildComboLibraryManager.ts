@@ -9,19 +9,19 @@ export enum LibraryStatuses {
     UP_TO_DATE,
     OUT_OF_DATE,
     CHANNEL_NOT_SET,
-    LENGTH_MISMATCH
+    LENGTH_MISMATCH,
 }
 
 export enum LibraryUpdateResponse {
     CHANNEL_NOT_SET,
     ALREADY_UP_TO_DATE,
-    UPDATED
+    UPDATED,
 }
 
 export enum LibraryPurgeResponse {
     NOT_FOUND,
     CHANNEL_NOT_SET,
-    SUCCESS
+    SUCCESS,
 }
 
 export class GuildComboLibraryManager {
@@ -96,9 +96,10 @@ export class GuildComboLibraryManager {
     }
 
     private async getLibraryStatus(messageCollection: Collection<String, Message>, mo: MessageOptions[]) {
-        if (!messageCollection.size) return {
-            status: LibraryStatuses.NOT_FOUND
-        };
+        if (!messageCollection.size)
+            return {
+                status: LibraryStatuses.NOT_FOUND,
+            };
 
         // console.log(messageCollection);
         const messages = [...messageCollection.values()].reverse();
@@ -125,7 +126,7 @@ export class GuildComboLibraryManager {
 
         return {
             status: LibraryStatuses.OUT_OF_DATE,
-            diff: diffCollection
+            diff: diffCollection,
         };
     }
 
@@ -139,7 +140,8 @@ export class GuildComboLibraryManager {
             const embed1 = embeds1[i];
             const embed2 = embeds2[i];
 
-            if (embed1.title !== embed2.title ||
+            if (
+                embed1.title !== embed2.title ||
                 embed1.description !== embed2.description ||
                 embed1.footer?.text !== embed2.footer?.text ||
                 embed1.fields.length !== embed2.fields.length ||
@@ -187,9 +189,9 @@ export class GuildComboLibraryManager {
                     const [comboIndex, message] = diffArr[i];
 
                     const edit = {
-                        embeds: (comboEmbeds[comboIndex].embeds as MessageEmbed[]),
+                        embeds: comboEmbeds[comboIndex].embeds as MessageEmbed[],
                         files: comboEmbeds[comboIndex].files,
-                        attachments: []
+                        attachments: [],
                     } as MessageEditOptions;
 
                     message.edit(edit);
@@ -230,9 +232,7 @@ export class GuildComboLibraryManager {
         return res.status;
     }
 
-    public async purge(
-        deleteCallback?: (i?: number, messages?: Message[]) => unknown | Promise<unknown>
-    ) {
+    public async purge(deleteCallback?: (i?: number, messages?: Message[]) => unknown | Promise<unknown>) {
         const channel = await this.getLibraryChannel();
         if (!channel) return LibraryPurgeResponse.CHANNEL_NOT_SET;
         const messageCollection = await this.getEmbedMessages(channel);
@@ -246,18 +246,15 @@ export class GuildComboLibraryManager {
 
             await m.delete();
 
-            if (i < messages.length - 1)
-                await sleep(1000);
+            if (i < messages.length - 1) await sleep(1000);
 
-            !!deleteCallback && await deleteCallback(i, messages);
+            !!deleteCallback && (await deleteCallback(i, messages));
         }
 
         return LibraryPurgeResponse.SUCCESS;
     }
 
-    public async purgeDirectory(
-        deleteCallback?: (i?: number, messages?: Message[]) => unknown | Promise<unknown>
-    ) {
+    public async purgeDirectory(deleteCallback?: (i?: number, messages?: Message[]) => unknown | Promise<unknown>) {
         const directoryChannel = await this.getDirectoryChannel();
         if (!directoryChannel) return LibraryPurgeResponse.CHANNEL_NOT_SET;
 
@@ -277,10 +274,9 @@ export class GuildComboLibraryManager {
 
             await m.delete();
 
-            if (i < messages.length - 1)
-                await sleep(1000);
+            if (i < messages.length - 1) await sleep(1000);
 
-            !!deleteCallback && await deleteCallback(i, messages);
+            !!deleteCallback && (await deleteCallback(i, messages));
         }
 
         return LibraryPurgeResponse.SUCCESS;
@@ -294,7 +290,7 @@ export class GuildComboLibraryManager {
         const messages = [...messageCollection.values()].reverse();
 
         const infoEmbed = new MessageEmbed({
-            title: 'Mona\'s Combo Library Directory',
+            title: "Mona's Combo Library Directory",
             color: colors.primary,
             description: `This is a directory channel from where you can quickly access each combo that has been submitted to <#${libraryChannel.id}>.\n`,
         });
@@ -302,10 +298,11 @@ export class GuildComboLibraryManager {
         const comboSubmissionEmbed = new MessageEmbed({
             title: 'How to submit a combo',
             color: colors.primary,
-            description: 'To submit your combo to the combo library, go to <#816715309314342952> and follow the instructions on the [pinned message](https://discord.com/channels/780891070862196807/816715309314342952/816858472372764692).',
+            description:
+                'To submit your combo to the combo library, go to <#816715309314342952> and follow the instructions on the [pinned message](https://discord.com/channels/780891070862196807/816715309314342952/816858472372764692).',
             footer: {
-                text: 'If you\'re having trouble with your combo submission, feel free to ask for help in #questions.'
-            }
+                text: "If you're having trouble with your combo submission, feel free to ask for help in #questions.",
+            },
         });
 
         for (let i = 0; i < messages.length; i++) {
