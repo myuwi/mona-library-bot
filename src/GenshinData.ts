@@ -153,6 +153,10 @@ export const Characters: Character[] = [
         rarity: 4
     },
     {
+        name: 'Traveler',
+        rarity: 5
+    },
+    {
         name: 'Venti',
         rarity: 5
     },
@@ -196,7 +200,7 @@ export const parseCharacter = (characterName: string, options: ParseCharacterOpt
     const opts: Required<ParseCharacterOptions> = {
         throwOnNotFound: options.throwOnNotFound ?? false
     };
-    
+
     const charName = characterName.toUpperCase();
 
     for (let j = 0; j < Characters.length; j++) {

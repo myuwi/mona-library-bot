@@ -30,7 +30,7 @@ module.exports = {
 		'no-unreachable': 2,
 		'object-curly-spacing': [2, 'always'],
 		'prefer-const': 2,
-		'quotes': [2, 'single'],
+		'quotes': [2, 'single', { 'avoidEscape': true }],
 		'semi': [2, 'always'],
 		'no-extra-semi': 2,
 		'space-before-blocks': [2, 'always'],

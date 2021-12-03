@@ -7,7 +7,8 @@ import { Command } from '../../types';
 
 export const command: Command = {
     name: 'library',
-    description: 'Manage the combo library on the current channel',
+    description: 'Manage the combo library on the current server',
+    aliases: ['lib', 'l'],
     group: 'General',
     usage: 'library [update | status | purge | channel <library | directory> <set <channel id> | unset> ]',
     permissionLevel: PermissionLevel.MODERATOR,
