@@ -1,6 +1,6 @@
 import { DocParser, DocElement } from './DocParser';
 import { EmbedFieldData, Guild, MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
-import { Characters, parseCharacters } from '../GenshinData';
+import { Characters, parseCharacter, parseCharacters } from '../GenshinData';
 import { ThumbnailGenerator } from '../ThumbnailGenerator';
 import { MClient } from '../client/MClient';
 import { GuildComboLibraryManager } from './GuildComboLibraryManager';
@@ -196,15 +196,11 @@ export class ComboLibraryManager extends DocParser {
                         // Parse combo members
                         if (field.name === 'Combo Requirements') {
                             for (let j = 0; j < field.value.length; j++) {
-                                const line = field.value[j];
+                                const charName = field.value[j].rawText.split('-')[0];
+                                const char = parseCharacter(charName);
 
-                                for (let k = 0; k < Characters.length; k++) {
-                                    const characterName = Characters[k].name;
-
-                                    if (line.rawText.toUpperCase().startsWith(characterName.toUpperCase())) {
-                                        combo.members.push(characterName);
-                                        break;
-                                    }
+                                if (char) {
+                                    combo.members.push(char.name);
                                 }
                             }
                         }
@@ -352,6 +348,7 @@ export class ComboLibraryManager extends DocParser {
                 };
 
                 if (combo.members.length) {
+                    console.log(combo.members);
                     const members = parseCharacters(combo.members);
                     const image = await ThumbnailGenerator.abyss(members);
 

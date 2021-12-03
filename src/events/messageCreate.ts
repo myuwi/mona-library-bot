@@ -28,7 +28,7 @@ export const event = async (client: MClient, message: Message) => {
         return await message.channel.send({ embeds: [EmbedUtils.error("You don't have permission to execute that command")] });
     }
 
-    console.log(chalk.cyan(`[${message.guild.name}] ${message.author.tag} executed the ${commandName} command`));
+    console.log(chalk.cyan(`[${message.guild.name}] ${message.author.tag} executed the ${command.name} command`));
 
     try {
         await command.run(message, args, client);
