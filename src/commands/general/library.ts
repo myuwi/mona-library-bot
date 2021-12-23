@@ -5,6 +5,7 @@ import { LibraryPurgeResponse, LibraryUpdateResponse, LibraryStatuses } from '..
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
 
+// TODO: Split into separate commands
 export const command: Command = {
     name: 'library',
     description: 'Manage the combo library on the current server',
@@ -12,6 +13,7 @@ export const command: Command = {
     group: 'General',
     usage: 'library [update | status | purge | channel <library | directory> <set <channel id> | unset> ]',
     permissionLevel: PermissionLevel.MODERATOR,
+    disabled: true,
     run: async (message: Message, args: string[], client: MClient) => {
         if (!args.length) {
             return await message.channel.send({
@@ -37,7 +39,7 @@ export const command: Command = {
                         await statusMessage.edit({ embeds: [EmbedUtils.success('Directory channel updated')] });
                     } catch (err: any) {
                         if (err.message === 'Library channel not set') {
-                            return await message.channel.send({ embeds: [EmbedUtils.error('Directory channel is not set')] });
+                            return await message.channel.send({ embeds: [EmbedUtils.error('Library channel is not set')] });
                         }
                         console.error(err.toString());
                         return await message.channel.send({

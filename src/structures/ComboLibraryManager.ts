@@ -1,38 +1,18 @@
-import { DocParser, DocElement } from './DocParser';
-import { EmbedFieldData, Guild, MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
-import { Character, Characters, parseCharacter, parseCharacters } from '../GenshinData';
-import { ThumbnailGenerator } from '../ThumbnailGenerator';
+import { DocumentParser, DocElement } from './DocumentParser';
+import { Guild } from 'discord.js';
+import { parseCharacter } from '../GenshinData';
 import { MClient } from '../client/MClient';
 import { GuildComboLibraryManager } from './GuildComboLibraryManager';
-
-export type ComboLibrary = {
-    categories: ComboCategory[];
-};
-
-export type ComboCategory = {
-    name: string;
-    description: DocElement[];
-    headingId?: string;
-    combos: Combo[];
-};
-
-export type Combo = {
-    name: string;
-    submittedBy?: string;
-    description: DocElement[];
-    members: Character[];
-    headingId?: string;
-    fields: ComboField[];
-};
+import { ComboLibrary, ComboLibraryData } from './ComboLibrary/ComboLibrary';
+import { Combo, ComboData } from './ComboLibrary/Combo';
+import { ComboCategory, ComboCategoryData } from './ComboLibrary/ComboCategory';
 
 export type ComboField = {
     name: string;
     value: DocElement[];
 };
 
-const ZERO_WIDTH_SPACE = String.fromCharCode(8203);
-
-export class ComboLibraryManager extends DocParser {
+export class ComboLibraryManager extends DocumentParser {
     private client: MClient;
 
     constructor(client: MClient, documentId: string) {
@@ -58,8 +38,8 @@ export class ComboLibraryManager extends DocParser {
         }
     }
 
-    public parseCombos(elements: DocElement[]) {
-        const comboLibrary: ComboLibrary = {
+    public getComboLibrary(elements: DocElement[]) {
+        const comboLibrary: ComboLibraryData = {
             categories: [],
         };
 
@@ -80,7 +60,7 @@ export class ComboLibraryManager extends DocParser {
 
             // category title
             if (element.style === 'HEADING_1' && element.rawText !== '') {
-                const comboCategory: ComboCategory = {
+                const comboCategory: ComboCategoryData = {
                     name: element.rawText,
                     description: [],
                     combos: [],
@@ -115,13 +95,13 @@ export class ComboLibraryManager extends DocParser {
 
                 comboCategory.description = desc;
 
-                comboLibrary.categories.push(comboCategory);
+                comboLibrary.categories.push(new ComboCategory(comboCategory));
                 continue;
             }
 
             // Combo
             if (element.style === 'HEADING_2' && element.rawText !== '') {
-                const combo: Combo = {
+                const combo: ComboData = {
                     name: element.rawText,
                     description: [],
                     members: [],
@@ -166,7 +146,7 @@ export class ComboLibraryManager extends DocParser {
 
                 combo.description = desc;
 
-                // iterate over elements
+                // iterate over elements to find combo fields
                 for (let j = i + 1; j < elements.length; j++) {
                     const el = elements[j];
 
@@ -205,6 +185,14 @@ export class ComboLibraryManager extends DocParser {
                             }
                         }
 
+                        // Remove empty lines from the start and the end of the description
+                        while (field.value[0].rawText === '') {
+                            field.value.shift();
+                        }
+                        while (field.value[field.value.length - 1].rawText === '') {
+                            field.value.pop();
+                        }
+
                         combo.fields.push(field);
                     }
 
@@ -213,202 +201,11 @@ export class ComboLibraryManager extends DocParser {
 
                 // console.log('fields', fields);
 
-                comboLibrary.categories[comboLibrary.categories.length - 1].combos.push(combo);
+                comboLibrary.categories[comboLibrary.categories.length - 1].data!.combos.push(new Combo(combo));
                 continue;
             }
         }
 
-        return comboLibrary;
-    }
-
-    public async toDiscordEmbeds(comboLibrary: ComboLibrary) {
-        const assets: { [s: string]: string } = {
-            'Vaporize Combos':
-                'https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png',
-            'Freeze Combos':
-                'https://cdn.discordapp.com/attachments/809845587905871914/878954338788180038/Namecard_Background_Ganyu_Qilin_188px.png',
-            'Electro-Charged Combos':
-                'https://cdn.discordapp.com/attachments/809845587905871914/878954346098872330/Namecard_Background_Beidou_Weighing_Anchor_188px.png',
-        };
-
-        const embeds: MessageOptions[] = [];
-
-        // combo categories
-        for (let i = 0; i < comboLibrary.categories.length; i++) {
-            const category = comboLibrary.categories[i];
-
-            if (!category.combos.length) continue;
-
-            const embed = new MessageEmbed().setTitle(category.name).setColor('#5565f1');
-
-            if (assets[category.name]) {
-                embed.setImage(assets[category.name]);
-            }
-
-            const desc = [];
-            for (let j = 0; j < category.description.length; j++) {
-                const el = category.description[j];
-
-                // category desc
-                if (el.style === 'NORMAL_TEXT') {
-                    desc.push(el.toMarkdown());
-                    continue;
-                }
-
-                break;
-            }
-
-            if (category.headingId) {
-                desc.push(
-                    `${ZERO_WIDTH_SPACE}\n[View on Google Docs](https://docs.google.com/document/d/${this.documentId}/edit#heading=${category.headingId})`
-                );
-            }
-
-            embed.setDescription(desc.join('\n'));
-
-            embeds.push({ embeds: [embed] });
-
-            // combos
-            for (let j = 0; j < category.combos.length; j++) {
-                const combo = category.combos[j];
-                // console.log(combo);
-
-                const embed = new MessageEmbed().setTitle(combo.name).setColor('#5565f1');
-
-                if (combo.submittedBy) {
-                    embed.setFooter(`Submitted by ${combo.submittedBy}`);
-                }
-
-                const desc: string[] = [];
-                for (let k = 0; k < combo.description.length; k++) {
-                    const el = combo.description[k];
-
-                    // combo desc
-                    if (el.style === 'NORMAL_TEXT') {
-                        desc.push(el.toMarkdown());
-                        continue;
-                    }
-
-                    break;
-                }
-
-                desc.push(ZERO_WIDTH_SPACE);
-                embed.setDescription(desc.join('\n'));
-
-                const embedFields: EmbedFieldData[] = [];
-
-                // Iterate over fields
-                for (let k = 0; k < combo.fields.length; k++) {
-                    const field = combo.fields[k];
-
-                    const allowedFields = ['Description', 'Difficulty', 'Combo Steps', 'Video', 'Videos'];
-                    if (!allowedFields.includes(field.name)) continue;
-
-                    const lines = field.value.reduce((acc: string[], cur) => {
-                        const line = cur.toMarkdown();
-                        return [...acc, line];
-                    }, []);
-
-                    lines.push(ZERO_WIDTH_SPACE);
-
-                    const embedField: EmbedFieldData = {
-                        name: field.name,
-                        value: lines.join('\n'),
-                    };
-
-                    embedFields.push(embedField);
-
-                    // if (options.thumbnails && !embed.image && (field.name === 'Video' || field.name === 'Videos')) {
-                    //     for (let l = 0; l < field.value.length; l++) {
-                    //         const textEl = field.value[l];
-                    //         const thumbnail = await DocParser.getVideoThumbnail(textEl);
-
-                    //         if (thumbnail) {
-                    //             embed.setImage(thumbnail);
-                    //             break;
-                    //         }
-                    //     }
-                    // }
-                }
-
-                const headerLink =
-                    combo.headingId &&
-                    `[View on Google Docs](https://docs.google.com/document/d/${this.documentId}/edit#heading=${combo.headingId})`;
-
-                // add link to the end of the last field
-                if (headerLink) {
-                    embedFields[embedFields.length - 1].value += `\n${headerLink}`;
-                }
-
-                // console.log('embedFields', embedFields);
-                embed.addFields(embedFields);
-
-                const messageOptions: MessageOptions = {
-                    embeds: [embed],
-                };
-
-                if (combo.members.length) {
-                    console.log(combo.members);
-                    const image = await ThumbnailGenerator.abyss(combo.members);
-
-                    const imageName = combo.members
-                        .map((m) => {
-                            const name = m.displayName ?? m.name;
-                            return name.toLowerCase().replace(' ', '');
-                        })
-                        .join('-');
-
-                    if (image) {
-                        messageOptions.files = [new MessageAttachment(image, `${imageName}.png`)];
-                        embed.setImage(`attachment://${imageName}.png`);
-                    }
-                }
-
-                embeds.push(messageOptions);
-            }
-        }
-
-        return embeds;
-    }
-
-    public async toDiscordDirectory(comboLibrary: ComboLibrary) {
-        const embed = new MessageEmbed()
-            .setTitle('Mona Combo Library')
-            .setColor('#5565f1')
-            .setImage(
-                'https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png'
-            )
-            .setFooter("Please DM Myuwi#0001 if there's any trouble with the bot.");
-
-        // combo categories
-        for (let i = 0; i < comboLibrary.categories.length; i++) {
-            const category = comboLibrary.categories[i];
-
-            const field: EmbedFieldData = {
-                name: category.name,
-                value: '',
-            };
-
-            const comboLinks = [];
-
-            // combos
-            for (let j = 0; j < category.combos.length; j++) {
-                const combo = category.combos[j];
-                // console.log(combo);
-
-                if (combo.headingId) {
-                    comboLinks.push(
-                        `‣ [${combo.name}](https://docs.google.com/document/d/${this.documentId}/edit#heading=${combo.headingId})`
-                    );
-                }
-            }
-
-            if (comboLinks.length) {
-                field.value = comboLinks.join('\n');
-                embed.addFields(field);
-            }
-        }
-
-        return embed;
+        return new ComboLibrary(comboLibrary);
     }
 }

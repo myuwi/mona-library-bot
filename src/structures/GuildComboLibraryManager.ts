@@ -1,37 +1,40 @@
-import { Collection, Guild, Message, MessageEditOptions, MessageEmbed, MessageOptions, TextChannel } from 'discord.js';
+import { Collection, Guild, Message, MessageEditOptions, MessageEmbed, TextChannel } from 'discord.js';
 import { MClient } from '../client/MClient';
 import { colors } from '../colors';
 import { sleep } from '../utils';
+import { Combo, ComboData } from './ComboLibrary/Combo';
+import { ComboCategoryData } from './ComboLibrary/ComboCategory';
+import { ComboLibraryElement } from './ComboLibrary/ComboLibraryElement';
 import { ComboLibraryManager } from './ComboLibraryManager';
 
 export enum LibraryStatuses {
-    NOT_FOUND,
-    UP_TO_DATE,
-    OUT_OF_DATE,
-    CHANNEL_NOT_SET,
-    LENGTH_MISMATCH,
+    NOT_FOUND = 'NOT_FOUND',
+    UP_TO_DATE = 'UP_TO_DATE',
+    OUT_OF_DATE = 'OUT_OF_DATE',
+    CHANNEL_NOT_SET = 'CHANNEL_NOT_SET',
+    LENGTH_MISMATCH = 'LENGTH_MISMATCH',
 }
 
 export enum LibraryUpdateResponse {
-    CHANNEL_NOT_SET,
-    ALREADY_UP_TO_DATE,
-    UPDATED,
+    CHANNEL_NOT_SET = 'CHANNEL_NOT_SET',
+    ALREADY_UP_TO_DATE = 'ALREADY_UP_TO_DATE',
+    UPDATED = 'UPDATED',
 }
 
 export enum LibraryPurgeResponse {
-    NOT_FOUND,
-    CHANNEL_NOT_SET,
-    SUCCESS,
+    NOT_FOUND = 'NOT_FOUND',
+    CHANNEL_NOT_SET = 'CHANNEL_NOT_SET',
+    SUCCESS = 'SUCCESS',
 }
 
 export class GuildComboLibraryManager {
     private client: MClient;
-    private clManager: ComboLibraryManager;
+    private comboLibraryManager: ComboLibraryManager;
     private guild: Guild;
 
-    constructor(client: MClient, clManager: ComboLibraryManager, guild: Guild) {
+    constructor(client: MClient, comboLibraryManager: ComboLibraryManager, guild: Guild) {
         this.client = client;
-        this.clManager = clManager;
+        this.comboLibraryManager = comboLibraryManager;
         this.guild = guild;
     }
 
@@ -95,7 +98,7 @@ export class GuildComboLibraryManager {
         return messageCollection;
     }
 
-    private async getLibraryStatus(messageCollection: Collection<String, Message>, mo: MessageOptions[]) {
+    private async getLibraryStatus(messageCollection: Collection<String, Message>, libraryElements: ComboLibraryElement<any>[]) {
         if (!messageCollection.size)
             return {
                 status: LibraryStatuses.NOT_FOUND,
@@ -107,52 +110,25 @@ export class GuildComboLibraryManager {
 
         // console.log(embeds);
 
-        const rEmbeds = mo.map((e) => e.embeds![0] as MessageEmbed);
-
-        if (embeds.length !== rEmbeds.length) {
+        if (embeds.length !== libraryElements.length) {
             return { status: LibraryStatuses.LENGTH_MISMATCH };
         }
 
-        const diff = this.compare(embeds, rEmbeds);
+        const diff: [number, Message][] = [];
 
-        if (!diff.length) return { status: LibraryStatuses.UP_TO_DATE };
-
-        const diffCollection = new Collection<number, Message>();
-
-        for (let i = 0; i < diff.length; i++) {
-            const elementIndex = diff[i];
-            diffCollection.set(elementIndex, messages[elementIndex]);
-        }
-
-        return {
-            status: LibraryStatuses.OUT_OF_DATE,
-            diff: diffCollection,
-        };
-    }
-
-    private compare(embeds1: MessageEmbed[], embeds2: MessageEmbed[]) {
-        // Embed count is different
-        if (embeds1.length !== embeds2.length) throw new Error('Embed arrays are of different length');
-
-        const diff: number[] = [];
-
-        for (let i = 0; i < embeds1.length; i++) {
-            const embed1 = embeds1[i];
-            const embed2 = embeds2[i];
-
-            if (
-                embed1.title !== embed2.title ||
-                embed1.description !== embed2.description ||
-                embed1.footer?.text !== embed2.footer?.text ||
-                embed1.fields.length !== embed2.fields.length ||
-                embed1.fields.some((f, i) => f.name !== embed2.fields[i].name || f.value !== embed2.fields[i].value) ||
-                embed1.image?.url.split('/').pop() !== embed2.image?.url.split('/').pop()
-            ) {
-                diff.push(i);
+        for (let i = 0; i < libraryElements.length; i++) {
+            const e = libraryElements[i];
+            if (!e.compareTo(new Combo(embeds[i]))) {
+                diff.push([i, messages[i]]);
             }
         }
 
-        return diff;
+        if (!diff.length) return { status: LibraryStatuses.UP_TO_DATE };
+
+        return {
+            status: LibraryStatuses.OUT_OF_DATE,
+            diff: diff,
+        };
     }
 
     public async update() {
@@ -160,21 +136,23 @@ export class GuildComboLibraryManager {
         if (!channel) return LibraryUpdateResponse.CHANNEL_NOT_SET;
         const messageCollection = await this.getEmbedMessages(channel);
 
-        const doc = await this.clManager.parseDoc();
+        const doc = await this.comboLibraryManager.parseDoc();
         if (!doc) throw new Error('Cannot open document');
-        const comboEmbeds = await this.clManager.toDiscordEmbeds(this.clManager.parseCombos(doc));
+        const comboLibrary = this.comboLibraryManager.getComboLibrary(doc);
+        const comboLibraryElements = comboLibrary.flatten();
 
         // Send embeds if the channel is empty
         if (!messageCollection.size) {
-            for (let i = 0; i < comboEmbeds.length; i++) {
-                const embed = comboEmbeds[i];
-                channel.send(embed);
+            for (let i = 0; i < comboLibraryElements.length; i++) {
+                const messageOptions = await comboLibraryElements[i].toMessageOptions();
+                await channel.send(messageOptions);
                 await sleep(1000);
             }
 
             return LibraryUpdateResponse.UPDATED;
         }
-        const res = await this.getLibraryStatus(messageCollection, comboEmbeds);
+
+        const res = await this.getLibraryStatus(messageCollection, comboLibraryElements);
 
         switch (res.status) {
             case LibraryStatuses.UP_TO_DATE:
@@ -184,18 +162,15 @@ export class GuildComboLibraryManager {
                 const { diff } = res;
                 if (!diff) return LibraryUpdateResponse.ALREADY_UP_TO_DATE;
 
-                const diffArr = Array.from(diff);
-
-                for (let i = 0; i < diffArr.length; i++) {
-                    const [comboIndex, message] = diffArr[i];
+                for (let i = 0; i < diff.length; i++) {
+                    const [comboIndex, message] = diff[i];
 
                     const edit = {
-                        embeds: comboEmbeds[comboIndex].embeds as MessageEmbed[],
-                        files: comboEmbeds[comboIndex].files,
+                        ...(await comboLibraryElements[comboIndex].toMessageOptions()),
                         attachments: [],
                     } as MessageEditOptions;
 
-                    message.edit(edit);
+                    await message.edit(edit);
                     await sleep(1000);
                 }
 
@@ -207,9 +182,9 @@ export class GuildComboLibraryManager {
                     await sleep(1000);
                 }
 
-                for (let i = 0; i < comboEmbeds.length; i++) {
-                    const embed = comboEmbeds[i];
-                    channel.send(embed);
+                for (let i = 0; i < comboLibraryElements.length; i++) {
+                    const messageOptions = await comboLibraryElements[i].toMessageOptions();
+                    await channel.send(messageOptions);
                     await sleep(1000);
                 }
                 return LibraryUpdateResponse.UPDATED;
@@ -224,11 +199,14 @@ export class GuildComboLibraryManager {
         if (!channel) return LibraryStatuses.CHANNEL_NOT_SET;
         const messageCollection = await this.getEmbedMessages(channel);
 
-        const doc = await this.clManager.parseDoc();
+        const doc = await this.comboLibraryManager.parseDoc();
         if (!doc) throw new Error('Cannot open document');
-        const comboEmbeds = await this.clManager.toDiscordEmbeds(this.clManager.parseCombos(doc));
+        const comboLibrary = this.comboLibraryManager.getComboLibrary(doc);
+        const comboLibraryElements = comboLibrary.flatten();
 
-        const res = await this.getLibraryStatus(messageCollection, comboEmbeds);
+        const res = await this.getLibraryStatus(messageCollection, comboLibraryElements);
+
+        console.log(res);
 
         return res.status;
     }

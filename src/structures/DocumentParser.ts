@@ -26,16 +26,19 @@ export class DocElement {
     }
 
     public toMarkdown() {
-        const text = this.elements.reduce((val, cur) => {
-            let text = cur.text;
-            if (cur.bold) text = `**${text}**`;
+        const text = this.elements
+            .reduce((val, cur) => {
+                let text = cur.text;
+                if (cur.bold) text = `**${text}**`;
 
-            if (cur.underline && !cur.link) text = `__${text}__`;
+                // Do not add underline to non links
+                // if (cur.underline && !cur.link) text = `__${text}__`;
 
-            if (cur.link) text = `[${text}](${cur.link})`;
+                if (cur.link) text = `[${text}](${cur.link})`;
 
-            return val + text;
-        }, '');
+                return val + text;
+            }, '')
+            .trim();
 
         if (this.bullet) {
             return `${this.bullet} ${text}`;
@@ -45,7 +48,7 @@ export class DocElement {
     }
 }
 
-export class DocParser {
+export class DocumentParser {
     private apiClient?: docs.docs_v1.Docs;
     protected documentId: string;
 
