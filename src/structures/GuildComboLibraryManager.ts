@@ -2,8 +2,7 @@ import { Collection, Guild, Message, MessageEditOptions, MessageEmbed, TextChann
 import { MClient } from '../client/MClient';
 import { colors } from '../colors';
 import { sleep } from '../utils';
-import { Combo, ComboData } from './ComboLibrary/Combo';
-import { ComboCategoryData } from './ComboLibrary/ComboCategory';
+import { Combo } from './ComboLibrary/Combo';
 import { ComboLibraryElement } from './ComboLibrary/ComboLibraryElement';
 import { ComboLibraryManager } from './ComboLibraryManager';
 
@@ -160,18 +159,19 @@ export class GuildComboLibraryManager {
 
             case LibraryStatuses.OUT_OF_DATE:
                 const { diff } = res;
+                console.log(res);
                 if (!diff) return LibraryUpdateResponse.ALREADY_UP_TO_DATE;
 
                 for (let i = 0; i < diff.length; i++) {
                     const [comboIndex, message] = diff[i];
 
                     const edit = {
-                        ...(await comboLibraryElements[comboIndex].toMessageOptions()),
                         attachments: [],
+                        ...(await comboLibraryElements[comboIndex].toMessageOptions()),
                     } as MessageEditOptions;
 
                     await message.edit(edit);
-                    await sleep(1000);
+                    if (i < diff.length) await sleep(1000);
                 }
 
                 return LibraryUpdateResponse.UPDATED;
@@ -185,7 +185,7 @@ export class GuildComboLibraryManager {
                 for (let i = 0; i < comboLibraryElements.length; i++) {
                     const messageOptions = await comboLibraryElements[i].toMessageOptions();
                     await channel.send(messageOptions);
-                    await sleep(1000);
+                    if (i < comboLibraryElements.length) await sleep(1000);
                 }
                 return LibraryUpdateResponse.UPDATED;
 

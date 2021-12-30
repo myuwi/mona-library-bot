@@ -5,7 +5,7 @@ export type Character = {
     rarity: number;
 };
 
-// Last updated 2.2
+// Last updated for 2.3
 export const Characters: Character[] = [
     {
         name: 'Aether',
@@ -22,6 +22,11 @@ export const Characters: Character[] = [
     {
         name: 'Amber',
         rarity: 4,
+    },
+    {
+        name: 'Arataki Itto',
+        displayName: 'Itto',
+        rarity: 5,
     },
     {
         name: 'Barbara',
@@ -65,6 +70,10 @@ export const Characters: Character[] = [
         rarity: 5,
     },
     {
+        name: 'Gorou',
+        rarity: 4,
+    },
+    {
         name: 'Hu Tao',
         rarity: 5,
     },
@@ -96,6 +105,7 @@ export const Characters: Character[] = [
     },
     {
         name: 'Kujou Sara',
+        aliases: ['Sara'],
         rarity: 4,
     },
     {

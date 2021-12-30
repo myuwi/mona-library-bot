@@ -9,8 +9,8 @@ import { Command } from '../../types';
 export const command: Command = {
     name: 'team',
     description: 'Generate a team image',
-    group: '',
-    permissionLevel: PermissionLevel.BOT_OWNER,
+    group: 'Genshin',
+    permissionLevel: PermissionLevel.HELPER,
     run: async (message: Message, args: string[], client: MClient) => {
         const teamRaw = args
             .join('')
@@ -26,7 +26,10 @@ export const command: Command = {
             });
         }
 
-        const embed = new MessageEmbed().setTitle(chars.map((c) => c.name).join(', ')).setColor(client.colors.primary);
+        const embed = new MessageEmbed({
+            title: chars.map((c) => c.name).join(', '),
+            color: client.colors.primary,
+        });
 
         const messageOptions: MessageOptions = {
             embeds: [embed],
@@ -35,6 +38,6 @@ export const command: Command = {
 
         embed.setImage('attachment://team.png');
 
-        message.channel.send(messageOptions);
+        await message.channel.send(messageOptions);
     },
 };

@@ -86,7 +86,7 @@ export class Combo extends ComboLibraryElement<ComboData> {
         embed.addFields(embedFields);
 
         if (combo.members.length) {
-            console.log(combo.members);
+            // console.log(combo.members);
 
             const imageName = combo.members
                 .map((m) => {
@@ -105,7 +105,7 @@ export class Combo extends ComboLibraryElement<ComboData> {
         const combo = this.data;
 
         if (!combo || !combo.members.length) return null;
-        console.log(combo.members);
+        // console.log(combo.members);
 
         const image = await ThumbnailGenerator.abyss(combo.members);
 

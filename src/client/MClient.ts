@@ -7,6 +7,9 @@ import { db } from '../database/db';
 import { createSchema } from '../database/schema';
 import { colors } from '../colors';
 import { config } from '../load-config';
+import * as path from 'path';
+import * as fs from 'fs';
+import { __rootdir__ } from '../root';
 
 export class MClient extends Client {
     public commands: CommandManager;
@@ -15,6 +18,7 @@ export class MClient extends Client {
     public db: typeof db;
     public config: typeof config;
     public colors: typeof colors;
+    public version: string;
 
     constructor() {
         super({
@@ -26,6 +30,9 @@ export class MClient extends Client {
         this.config = config;
         this.comboLibraryManager = new ComboLibraryManager(this, this.config.documentId);
         this.db = db;
+
+        const packageJson = path.join(__rootdir__, '..', 'package.json');
+        this.version = JSON.parse(fs.readFileSync(packageJson, 'utf-8')).version;
     }
 
     private async init() {

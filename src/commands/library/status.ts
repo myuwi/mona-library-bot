@@ -11,7 +11,7 @@ export const command: Command = {
     aliases: [],
     group: 'Library',
     usage: 'status',
-    permissionLevel: PermissionLevel.MODERATOR,
+    permissionLevel: PermissionLevel.HELPER,
     run: async (message: Message, args: string[], client: MClient) => {
         const guildLibraryManager = await client.comboLibraryManager.fetch(message.guild!);
 

@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { DocElement } from '../DocumentParser';
 import { ComboLibraryElement } from './ComboLibraryElement';
 import { Combo } from './Combo';
+import { colors } from '../../colors';
 
 export type ComboCategoryData = {
     name: string;
@@ -25,7 +26,10 @@ export class ComboCategory extends ComboLibraryElement<ComboCategoryData> {
     protected createEmbed(category: ComboCategoryData) {
         // if (!category.combos.length) return;
 
-        const embed = new MessageEmbed().setTitle(category.name).setColor('#5565f1');
+        const embed = new MessageEmbed({
+            title: category.name,
+            color: colors.primary,
+        });
 
         if (assets[category.name]) {
             embed.setImage(assets[category.name]);

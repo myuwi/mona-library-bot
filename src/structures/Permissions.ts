@@ -6,6 +6,7 @@ export enum PermissionLevel {
     BOT_OWNER = 'BOT_OWNER',
     ADMIN = 'ADMIN',
     MODERATOR = 'MODERATOR',
+    HELPER = 'HELPER',
     MEMBER = 'MEMBER',
 }
 
@@ -56,6 +57,10 @@ export const testPermissions = async (command: Command, member: GuildMember) => 
             return member.id === member.guild.ownerId || member.permissions.any(['MANAGE_GUILD'], true);
         case PermissionLevel.MODERATOR:
             return member.id === member.guild.ownerId || member.permissions.any(['MANAGE_GUILD', 'MANAGE_CHANNELS'], true);
+        case PermissionLevel.HELPER:
+            return (
+                member.id === member.guild.ownerId || member.permissions.any(['MANAGE_GUILD', 'MANAGE_CHANNELS', 'MANAGE_MESSAGES'], true)
+            );
         case PermissionLevel.MEMBER:
             return true;
     }

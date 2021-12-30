@@ -38,8 +38,6 @@ module.exports = {
         'one-var': [2, 'never'],
         'no-useless-constructor': 2,
         'no-useless-rename': 2,
-        'import/prefer-default-export': 0,
-        'import/no-default-export': 2,
         '@typescript-eslint/explicit-module-boundary-types': 0,
         '@typescript-eslint/no-explicit-any': 0,
         '@typescript-eslint/no-unused-vars': 0,

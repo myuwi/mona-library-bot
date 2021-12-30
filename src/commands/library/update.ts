@@ -10,8 +10,8 @@ export const command: Command = {
     description: 'Update the combo library',
     aliases: [],
     group: 'Library',
-    usage: 'update',
-    permissionLevel: PermissionLevel.MODERATOR,
+    usage: 'update <directory>',
+    permissionLevel: PermissionLevel.HELPER,
     run: async (message: Message, args: string[], client: MClient) => {
         const guildLibraryManager = await client.comboLibraryManager.fetch(message.guild!);
 
@@ -21,7 +21,7 @@ export const command: Command = {
             });
         }
 
-        if (args[0] === 'dir') {
+        if (args[0] === 'directory') {
             try {
                 const statusMessage = await message.channel.send({ embeds: [EmbedUtils.info('Updating directory channel...')] });
                 await guildLibraryManager.updateDirectory();
@@ -40,17 +40,19 @@ export const command: Command = {
         try {
             const statusMessage = await message.channel.send({ embeds: [EmbedUtils.info('Updating library channel...')] });
 
-            const resId = await guildLibraryManager.update();
+            const status = await guildLibraryManager.update();
 
-            try {
-                await statusMessage.edit({ embeds: [EmbedUtils.info('Updating directory channel...')] });
-                await guildLibraryManager.updateDirectory();
-            } catch (err: any) {
-                if (err.message !== 'Library channel not set') {
-                    console.error(err.toString());
-                    await message.channel.send({
-                        embeds: [EmbedUtils.error('Unable to update directory channel: ' + err.message)],
-                    });
+            if (status === LibraryUpdateResponse.UPDATED) {
+                try {
+                    await statusMessage.edit({ embeds: [EmbedUtils.info('Updating directory channel...')] });
+                    await guildLibraryManager.updateDirectory();
+                } catch (err: any) {
+                    if (err.message !== 'Library channel not set') {
+                        console.error(err.toString());
+                        await message.channel.send({
+                            embeds: [EmbedUtils.error('Unable to update directory channel: ' + err.message)],
+                        });
+                    }
                 }
             }
 
@@ -62,8 +64,8 @@ export const command: Command = {
                 [LibraryUpdateResponse.UPDATED]: EmbedUtils.success('The combo library channel has been updated succeessfully'),
             };
 
-            if (messages[resId]) {
-                await statusMessage.edit({ embeds: [messages[resId]] });
+            if (messages[status]) {
+                await statusMessage.edit({ embeds: [messages[status]] });
             }
         } catch (err: any) {
             console.error(err.toString());
