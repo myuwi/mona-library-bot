@@ -1,22 +1,23 @@
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import * as textToImage from 'text-to-image';
-import { Character, Characters, getCharacterFileName } from './GenshinData';
+import { Element, Character, Characters, Elements, getCharacterFileName } from './GenshinData';
 
 (async () => {
-    const data: Character[] = [
+    const data: (Element | Character)[] = [
         {
             name: 'Empty',
             displayName: '--',
             rarity: 1,
         },
         ...Characters,
+        ...Object.values(Elements),
     ];
 
     for (let i = 0; i < data.length; i++) {
-        const char = data[i];
-        console.log(`Generating name file for: ${char.name}`);
-        const name = char.displayName ?? char.name;
+        const el = data[i];
+        console.log(`Generating name file for: ${el.name}`);
+        const name = ('displayName' in el && el.displayName) || el.name;
 
         const dataUri = await textToImage.generate(name, {
             fontPath: './assets/fonts/ja-jp.ttf',
@@ -31,8 +32,8 @@ import { Character, Characters, getCharacterFileName } from './GenshinData';
             margin: 6,
         });
 
-        const fileName = getCharacterFileName(char);
+        const fileName = 'rarity' in el ? getCharacterFileName(el) : el.name;
         await writeFile(path.join(__dirname, `../assets/names/${fileName}.png`), Buffer.from(dataUri.split(',')[1], 'base64'));
-        console.log(`Generated name file for: ${char.name}`);
+        console.log(`Generated name file for: ${el.name}`);
     }
 })();

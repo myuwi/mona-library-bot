@@ -31,8 +31,13 @@ export class MClient extends Client {
         this.comboLibraryManager = new ComboLibraryManager(this, this.config.documentId);
         this.db = db;
 
+        this.version = this.getVersion();
+    }
+
+    private getVersion() {
         const packageJson = path.join(__rootdir__, '..', 'package.json');
-        this.version = JSON.parse(fs.readFileSync(packageJson, 'utf-8')).version;
+        const version = JSON.parse(fs.readFileSync(packageJson, 'utf-8')).version;
+        return version;
     }
 
     private async init() {

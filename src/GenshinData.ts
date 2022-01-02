@@ -1,3 +1,35 @@
+export type Element = {
+    name: string;
+};
+
+export type ElementsType = {
+    [t in string]: Element;
+};
+
+export const Elements: ElementsType = {
+    ANEMO: {
+        name: 'Anemo',
+    },
+    CRYO: {
+        name: 'Cryo',
+    },
+    DENDRO: {
+        name: 'Dendro',
+    },
+    ELECTRO: {
+        name: 'Electro',
+    },
+    GEO: {
+        name: 'Geo',
+    },
+    HYDRO: {
+        name: 'Hydro',
+    },
+    Pyro: {
+        name: 'Pyro',
+    },
+} as const;
+
 export type Character = {
     name: string;
     displayName?: string;
@@ -230,6 +262,22 @@ export const parseCharacter = (characterName: string, options: ParseCharacterOpt
     return null;
 };
 
+export const resolveElement = (elementName: string) => {
+    const element = elementName.toUpperCase();
+
+    const elements = Object.values(Elements);
+
+    for (let j = 0; j < elements.length; j++) {
+        const el = elements[j];
+
+        if (element.startsWith(el.name.toUpperCase())) {
+            return el;
+        }
+    }
+
+    return null;
+};
+
 export const parseCharacters = (characters: string[]) => {
     const _characters: Character[] = [];
 
@@ -237,6 +285,27 @@ export const parseCharacters = (characters: string[]) => {
         const charName = characters[i];
         const char = parseCharacter(charName);
         if (char) _characters.push(char);
+    }
+
+    return _characters;
+};
+
+export const parseTeam = (members: string[]) => {
+    const _characters: (Element | Character)[] = [];
+
+    for (let i = 0; i < members.length; i++) {
+        const name = members[i];
+
+        const char = parseCharacter(name);
+        if (char) {
+            _characters.push(char);
+            continue;
+        }
+
+        const element = resolveElement(name);
+        if (element) {
+            _characters.push(element);
+        }
     }
 
     return _characters;

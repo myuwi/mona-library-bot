@@ -1,7 +1,7 @@
 import { Message, MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
-import { parseCharacters } from '../../GenshinData';
+import { Characters, Elements, parseTeam } from '../../GenshinData';
 import { ThumbnailGenerator } from '../../ThumbnailGenerator';
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
@@ -12,12 +12,31 @@ export const command: Command = {
     group: 'Genshin',
     permissionLevel: PermissionLevel.HELPER,
     run: async (message: Message, args: string[], client: MClient) => {
+        if (!args.length || args[0] === 'help') {
+            const elements = Object.values(Elements)
+                .map((e) => `\`${e.name}\``)
+                .join(', ');
+
+            const chars = Characters.map((c) => {
+                let aliases = [];
+                if (c.displayName) aliases.push(c.displayName);
+                if (c.aliases && c.aliases.length) aliases = [...aliases, ...c.aliases];
+
+                let str = c.name;
+                if (aliases.length) str += ` (${aliases.join(', ')})`;
+
+                return `\`${str}\``;
+            }).join(', ');
+
+            return await message.channel.send(`**Available elements:**\n${elements}\n\n**Available character names:**\n${chars}`);
+        }
+
         const teamRaw = args
             .join('')
             .split(',')
             .map((e) => e.trim());
 
-        const chars = parseCharacters(teamRaw);
+        const chars = parseTeam(teamRaw);
 
         const msg = await message.channel.send({ embeds: [EmbedUtils.info('Generating image...')] });
 
@@ -36,7 +55,7 @@ export const command: Command = {
 
         const imageName = chars
             .map((m) => {
-                const name = m.displayName ?? m.name;
+                const name = ('displayName' in m && m.displayName) || m.name;
                 return name.toLowerCase().replace(' ', '');
             })
             .join('-');

@@ -12,11 +12,10 @@ export const event = async (client: MClient, message: Message) => {
 
     const mention = `<@!${client.user!.id}>`;
 
-    if (!message.content.startsWith(prefix) && !message.content.startsWith(mention)) return;
+    const matchesPrefix = message.content.toUpperCase().startsWith(prefix.toUpperCase());
+    if (!matchesPrefix && !message.content.startsWith(mention)) return;
 
-    const [commandName, ...args] = (
-        message.content.startsWith(prefix) ? message.content.slice(prefix.length) : message.content.replace(mention, '')
-    )
+    const [commandName, ...args] = (matchesPrefix ? message.content.slice(prefix.length) : message.content.replace(mention, ''))
         .trim()
         .split(/ +/g);
 
@@ -25,7 +24,8 @@ export const event = async (client: MClient, message: Message) => {
 
     const hasPermission = await testPermissions(command, message.member!);
     if (!hasPermission) {
-        return await message.channel.send({ embeds: [EmbedUtils.error("You don't have permission to execute that command")] });
+        return;
+        // return await message.channel.send({ embeds: [EmbedUtils.error("You don't have permission to execute that command")] });
     }
 
     console.log(chalk.cyan(`[${message.guild.name}] ${message.author.tag} executed the ${command.name} command`));
