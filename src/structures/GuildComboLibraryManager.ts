@@ -97,7 +97,7 @@ export class GuildComboLibraryManager {
         return messageCollection;
     }
 
-    private async getLibraryStatus(messageCollection: Collection<String, Message>, libraryElements: ComboLibraryElement<any>[]) {
+    private getLibraryStatus(messageCollection: Collection<String, Message>, libraryElements: ComboLibraryElement<any>[]) {
         if (!messageCollection.size)
             return {
                 status: LibraryStatuses.NOT_FOUND,
@@ -135,10 +135,8 @@ export class GuildComboLibraryManager {
         if (!channel) return LibraryUpdateResponse.CHANNEL_NOT_SET;
         const messageCollection = await this.getEmbedMessages(channel);
 
-        const doc = await this.comboLibraryManager.parseDoc();
-        if (!doc) throw new Error('Cannot open document');
-        const comboLibrary = this.comboLibraryManager.getComboLibrary(doc);
-        const comboLibraryElements = comboLibrary.flatten();
+        const comboLibraryElements = (await this.comboLibraryManager.getComboLibrary())?.flatten();
+        if (!comboLibraryElements) throw new Error('Combo Library could not be loaded');
 
         // Send embeds if the channel is empty
         if (!messageCollection.size) {
@@ -151,7 +149,7 @@ export class GuildComboLibraryManager {
             return LibraryUpdateResponse.UPDATED;
         }
 
-        const res = await this.getLibraryStatus(messageCollection, comboLibraryElements);
+        const res = this.getLibraryStatus(messageCollection, comboLibraryElements);
 
         switch (res.status) {
             case LibraryStatuses.UP_TO_DATE:
@@ -199,12 +197,10 @@ export class GuildComboLibraryManager {
         if (!channel) return LibraryStatuses.CHANNEL_NOT_SET;
         const messageCollection = await this.getEmbedMessages(channel);
 
-        const doc = await this.comboLibraryManager.parseDoc();
-        if (!doc) throw new Error('Cannot open document');
-        const comboLibrary = this.comboLibraryManager.getComboLibrary(doc);
-        const comboLibraryElements = comboLibrary.flatten();
+        const comboLibraryElements = (await this.comboLibraryManager.getComboLibrary())?.flatten();
+        if (!comboLibraryElements) throw new Error('Combo Library could not be loaded');
 
-        const res = await this.getLibraryStatus(messageCollection, comboLibraryElements);
+        const res = this.getLibraryStatus(messageCollection, comboLibraryElements);
 
         console.log(res);
 

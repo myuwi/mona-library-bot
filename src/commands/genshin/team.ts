@@ -18,6 +18,9 @@ export const command: Command = {
             .map((e) => e.trim());
 
         const chars = parseCharacters(teamRaw);
+
+        const msg = await message.channel.send({ embeds: [EmbedUtils.info('Generating image...')] });
+
         const image = await ThumbnailGenerator.abyss(chars);
 
         if (!image) {
@@ -31,13 +34,20 @@ export const command: Command = {
             color: client.colors.primary,
         });
 
+        const imageName = chars
+            .map((m) => {
+                const name = m.displayName ?? m.name;
+                return name.toLowerCase().replace(' ', '');
+            })
+            .join('-');
+
         const messageOptions: MessageOptions = {
             embeds: [embed],
-            files: [new MessageAttachment(image, 'team.png')],
+            files: [new MessageAttachment(image, `${imageName}.png`)],
         };
 
-        embed.setImage('attachment://team.png');
+        embed.setImage(`attachment://${imageName}.png`);
 
-        await message.channel.send(messageOptions);
+        await msg.edit(messageOptions);
     },
 };

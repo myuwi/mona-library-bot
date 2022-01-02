@@ -8,6 +8,7 @@ Node version 16.6.0+ is required
 git clone https://github.com/myuwi/mona-library-bot.git
 cd mona-library-bot
 yarn
+yarn build
 ```
 
 ## Configuration

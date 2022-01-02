@@ -38,7 +38,14 @@ export class ComboLibraryManager extends DocumentParser {
         }
     }
 
-    public getComboLibrary(elements: DocElement[]) {
+    public async getComboLibrary() {
+        const elements = await this.parseDoc();
+        if (!elements) return undefined;
+
+        return this.docToComboLib(elements);
+    }
+
+    private docToComboLib(elements: DocElement[]) {
         const comboLibrary: ComboLibraryData = {
             categories: [],
         };
