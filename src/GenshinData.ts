@@ -238,20 +238,20 @@ export type ParseCharacterOptions = {
     throwOnNotFound?: boolean;
 };
 
-export const parseCharacter = (characterName: string, options: ParseCharacterOptions = {}) => {
+export const resolveCharacter = (characterName: string, options: ParseCharacterOptions = {}) => {
     const opts: Required<ParseCharacterOptions> = {
         throwOnNotFound: options.throwOnNotFound ?? false,
     };
 
-    const charName = characterName.toUpperCase();
+    const charName = characterName.toUpperCase().replace(' ', '');
 
     for (let j = 0; j < Characters.length; j++) {
         const char = Characters[j];
 
         if (
-            charName.startsWith(char.name.toUpperCase()) ||
-            (char.displayName && charName.startsWith(char.displayName.toUpperCase())) ||
-            (char.aliases && char.aliases.length && char.aliases.some((a) => charName.startsWith(a.toUpperCase())))
+            charName.startsWith(char.name.toUpperCase().replace(' ', '')) ||
+            (char.displayName && charName.startsWith(char.displayName.toUpperCase().replace(' ', ''))) ||
+            (char.aliases && char.aliases.some((alias) => charName.startsWith(alias.toUpperCase().replace(' ', ''))))
         ) {
             return char;
         }
@@ -283,30 +283,38 @@ export const parseCharacters = (characters: string[]) => {
 
     for (let i = 0; i < characters.length; i++) {
         const charName = characters[i];
-        const char = parseCharacter(charName);
+        const char = resolveCharacter(charName);
         if (char) _characters.push(char);
     }
 
     return _characters;
 };
 
-export const parseTeam = (members: string[]) => {
-    const _characters: (Element | Character)[] = [];
+export const parseTeam = (members: string[], throwOnNotFound = false) => {
+    const output: (Element | Character)[] = [];
+    const invalid: string[] = [];
 
     for (let i = 0; i < members.length; i++) {
         const name = members[i];
 
-        const char = parseCharacter(name);
+        const char = resolveCharacter(name);
         if (char) {
-            _characters.push(char);
+            output.push(char);
             continue;
         }
 
         const element = resolveElement(name);
         if (element) {
-            _characters.push(element);
+            output.push(element);
+            continue;
         }
+
+        invalid.push(name);
     }
 
-    return _characters;
+    if (throwOnNotFound && invalid.length) {
+        throw new Error('Unable to parse characters: ' + invalid.join(', '));
+    }
+
+    return output;
 };

@@ -28,7 +28,13 @@ export const command: Command = {
                 return `\`${str}\``;
             }).join(', ');
 
-            return await message.channel.send(`**Available elements:**\n${elements}\n\n**Available character names:**\n${chars}`);
+            return await message.channel.send(`**Available elements:**\n${elements}\n\n**Available characters:**\n${chars}`);
+        }
+
+        let hasBackground = true;
+        if (args[0] === '--nobg') {
+            args.shift();
+            hasBackground = false;
         }
 
         const teamRaw = args
@@ -36,11 +42,27 @@ export const command: Command = {
             .split(',')
             .map((e) => e.trim());
 
-        const chars = parseTeam(teamRaw);
+        let chars;
+        try {
+            chars = parseTeam(teamRaw, true);
+        } catch (err: any) {
+            if (err.message.startsWith('Unable to parse characters:')) {
+                await message.channel.send({
+                    embeds: [EmbedUtils.error(err.message)],
+                });
+            }
+            return;
+        }
+
+        if (!chars.length) {
+            return await message.channel.send({
+                embeds: [EmbedUtils.error('Invalid team! Team must have atleast one valid team member.')],
+            });
+        }
 
         const msg = await message.channel.send({ embeds: [EmbedUtils.info('Generating image...')] });
 
-        const image = await ThumbnailGenerator.abyss(chars);
+        const image = await ThumbnailGenerator.abyss(chars, hasBackground);
 
         if (!image) {
             return await message.channel.send({

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.8
+
+### Added
+
+- Added `--nobg` option for `team` command
+
+### Changed
+
+- Character resolver now ignores spaces in character names
+- An error is now thrown if the `team` command is used with invalid character names
+
 ## 0.1.7
 
 ### Added

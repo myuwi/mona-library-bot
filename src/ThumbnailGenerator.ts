@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import { Character, Element, getCharacterFileName } from './GenshinData';
 
 export class ThumbnailGenerator {
-    public static async abyss(characters: (Character | Element)[]) {
+    public static async abyss(characters: (Character | Element)[], hasBackground = true) {
         if (characters.length > 4) {
             characters = characters.slice(0, 4);
         }
@@ -90,9 +90,22 @@ export class ThumbnailGenerator {
             comps = [...comps, ...emptyComps];
         }
 
-        const background = './assets/Abyss_Background.png';
+        let s;
+        if (hasBackground) {
+            const background = './assets/Abyss_Background.png';
+            s = sharp(background);
+        } else {
+            s = sharp({
+                create: {
+                    width: 1280,
+                    height: 376,
+                    channels: 4,
+                    background: { r: 0, g: 0, b: 0, alpha: 0 },
+                },
+            });
+        }
 
-        const buffer = sharp(background).composite(comps).png().toBuffer();
+        const buffer = s.composite(comps).png().toBuffer();
 
         return buffer;
     }
