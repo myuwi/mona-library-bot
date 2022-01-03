@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.9
+
+### Added
+
+- Added Shenhe and Yun Jin
+
 ## 0.1.8
 
 ### Added
