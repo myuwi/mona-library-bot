@@ -45,6 +45,10 @@ export const command: Command = {
                 case '--background':
                     imageOptions.background = true;
                     break;
+                case '--nobg':
+                case '--no-background':
+                    imageOptions.background = false;
+                    break;
                 case '--size':
                     if (!value) {
                         return await message.channel.send({

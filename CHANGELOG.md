@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+### Added
+
+- Added `--nobg` back for backwards compatibility
+
 ## 0.2.0
 
 ### Added
