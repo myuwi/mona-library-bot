@@ -1,9 +1,13 @@
 import { access, mkdir, writeFile } from 'fs/promises';
 import path from 'path';
-import { parseCharacters } from '../src/GenshinData';
+import { Characters, parseTeam } from '../src/GenshinData';
 import { ThumbnailGenerator } from '../src/ThumbnailGenerator';
 
 const outputdir = path.join(__dirname, 'output');
+
+const writeOutput = async (fileName: string, buffer: Buffer) => {
+    await writeFile(path.join(outputdir, fileName), buffer);
+};
 
 describe('Thumbnail Generator tests', () => {
     // create an output folder if it doesn't exist
@@ -15,13 +19,41 @@ describe('Thumbnail Generator tests', () => {
         }
     });
 
-    test('should generate thumbnail', async () => {
+    test('should generate image with background', async () => {
         const charNames = ['Ayaka', 'Mona', 'Kazuha', 'Diona'];
-        const chars = parseCharacters(charNames);
+        const data = parseTeam(charNames);
 
-        const buffer = await ThumbnailGenerator.abyss(chars);
+        const buffer = await ThumbnailGenerator.team(data, { background: true });
         expect(buffer).toBeInstanceOf(Buffer);
 
-        await writeFile(path.join(outputdir, 'test.png'), buffer);
+        await writeOutput('with_background.png', buffer);
+    });
+
+    test('should generate image without background', async () => {
+        const data = [Characters.KAMISATO_AYAKA, Characters.MONA, Characters.KAEDEHARA_KAZUHA, Characters.DIONA];
+
+        const buffer = await ThumbnailGenerator.team(data, { background: false });
+        expect(buffer).toBeInstanceOf(Buffer);
+
+        await writeOutput('without_background.png', buffer);
+    });
+
+    test('should generate images with different sizes', async () => {
+        const data = [
+            Characters.KAMISATO_AYAKA,
+            Characters.MONA,
+            Characters.KAEDEHARA_KAZUHA,
+            Characters.DIONA,
+            Characters.SHENHE,
+            Characters.ROSARIA,
+            Characters.GANYU,
+        ];
+
+        for (let i = 1; i <= data.length; i++) {
+            const buffer = await ThumbnailGenerator.team(data, { background: false, size: i });
+            expect(buffer).toBeInstanceOf(Buffer);
+
+            await writeOutput(`team_size_${i}.png`, buffer);
+        }
     });
 });

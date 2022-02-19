@@ -2,7 +2,7 @@ import { Message, MessageAttachment, MessageEmbed, MessageOptions } from 'discor
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
 import { Characters, Elements, parseTeam } from '../../GenshinData';
-import { ThumbnailGenerator } from '../../ThumbnailGenerator';
+import { GeneratorOptions, OptionsError, ThumbnailGenerator } from '../../ThumbnailGenerator';
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
 
@@ -17,28 +17,72 @@ export const command: Command = {
                 .map((e) => `\`${e.name}\``)
                 .join(', ');
 
-            const chars = Characters.map((c) => {
-                let aliases = [];
-                if (c.displayName) aliases.push(c.displayName);
-                if (c.aliases && c.aliases.length) aliases = [...aliases, ...c.aliases];
+            const chars = Object.values(Characters)
+                .map((c) => {
+                    let aliases = [];
+                    if (c.displayName) aliases.push(c.displayName);
+                    if (c.aliases && c.aliases.length) aliases = [...aliases, ...c.aliases];
 
-                let str = c.name;
-                if (aliases.length) str += ` (${aliases.join(', ')})`;
+                    let str = c.name;
+                    if (aliases.length) str += ` (${aliases.join(', ')})`;
 
-                return `\`${str}\``;
-            }).join(', ');
+                    return `\`${str}\``;
+                })
+                .join(', ');
 
             return await message.channel.send(`**Available elements:**\n${elements}\n\n**Available characters:**\n${chars}`);
         }
 
-        let hasBackground = true;
-        if (args[0] === '--nobg') {
+        const imageOptions: GeneratorOptions = {};
+
+        while (args[0].startsWith('--')) {
+            const arg = args[0];
+
+            const [key, value] = arg.split('=');
+
+            switch (key) {
+                case '--bg':
+                case '--background':
+                    imageOptions.background = true;
+                    break;
+                case '--size':
+                    if (!value) {
+                        return await message.channel.send({
+                            embeds: [EmbedUtils.error('Team size not specified')],
+                        });
+                    }
+
+                    if (!/^[0-9]+$/.test(value)) {
+                        return await message.channel.send({
+                            embeds: [EmbedUtils.error('Team size needs to be a numeric value')],
+                        });
+                    }
+
+                    imageOptions.size = parseInt(value);
+                    break;
+                default:
+                    return await message.channel.send({
+                        embeds: [EmbedUtils.error('Invalid flag: ' + key)],
+                    });
+            }
+
             args.shift();
-            hasBackground = false;
+        }
+
+        try {
+            ThumbnailGenerator.checkOptions(imageOptions);
+        } catch (err: any) {
+            if (err instanceof OptionsError) {
+                return await message.channel.send({
+                    embeds: [EmbedUtils.error(err.message)],
+                });
+            }
+
+            throw err;
         }
 
         const teamRaw = args
-            .join('')
+            .join(' ')
             .split(',')
             .map((e) => e.trim());
 
@@ -62,7 +106,7 @@ export const command: Command = {
 
         const msg = await message.channel.send({ embeds: [EmbedUtils.info('Generating image...')] });
 
-        const image = await ThumbnailGenerator.abyss(chars, hasBackground);
+        const image = await ThumbnailGenerator.team(chars, imageOptions);
 
         if (!image) {
             return await message.channel.send({

@@ -107,7 +107,7 @@ export class Combo extends ComboLibraryElement<ComboData> {
         if (!combo || !combo.members.length) return null;
         // console.log(combo.members);
 
-        const image = await ThumbnailGenerator.abyss(combo.members);
+        const image = await ThumbnailGenerator.team(combo.members, { background: true });
 
         return image;
     }

@@ -10,7 +10,7 @@ import { Element, Character, Characters, Elements, getCharacterFileName } from '
             displayName: '--',
             rarity: 1,
         },
-        ...Characters,
+        ...Object.values(Characters),
         ...Object.values(Elements),
     ];
 

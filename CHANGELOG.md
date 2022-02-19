@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0
+
+### Added
+
+- Added the ability to change team member count in `ThumbnailGenerator`
+- Added `--size` option in `team` command
+- Added Yae Miko
+
+### Changed
+
+- `team` command now defaults to no background
+- Replaced `--nobg` flag with `--bg` in `team` command
+
 ## 0.1.9
 
 ### Added

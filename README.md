@@ -1,5 +1,9 @@
 # Mona Combo Library Bot
 
+## README IS STILL WIP
+
+The README might be missing some info
+
 ## Installation
 
 Node version 16.6.0+ is required
@@ -27,3 +31,12 @@ Copy and rename the `config.json.example` to `config.json`. It should look somet
 Set the `token` to your Discord bot's token and `documentId` to the id of the Google Docs document. The `ownerId` should be set to your Discord account's snowflake.
 
 You will also be required to register a Service Account on a Google Cloud Platform project with access to the Google Docs API. Its credentials should be stored at the root folder in a file called `google-api-credentials.json`.
+
+## Updating
+
+```sh
+git pull
+yarn build
+```
+
+Make sure to also check [CHANGELOG.md](CHANGELOG.md) for breaking changes
