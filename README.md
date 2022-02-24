@@ -1,8 +1,17 @@
-# Mona Combo Library Bot
+<div align="center">
 
-## README IS STILL WIP
+# Mona Library Bot
 
-The README might be missing some info
+**A Discord bot for the [Mona Mains](https://discord.gg/mona) server.**
+
+</div>
+
+## Key Features
+
+- Parse a Google Docs document and transform it to Discord embeds
+- A permission system
+- Automatically generate team comp images from text
+- Supports multiple servers
 
 ## Installation
 
@@ -30,7 +39,9 @@ Copy and rename the `config.json.example` to `config.json`. It should look somet
 
 Set the `token` to your Discord bot's token and `documentId` to the id of the Google Docs document. The `ownerId` should be set to your Discord account's snowflake.
 
-You will also be required to register a Service Account on a Google Cloud Platform project with access to the Google Docs API. Its credentials should be stored at the root folder in a file called `google-api-credentials.json`.
+You will be required to register a Service Account on a Google Cloud Platform project by [following this guide (step 5 required only if the document is private)](https://cloud.google.com/docs/authentication/production#create_service_account). You should also grant the project access to the Google Docs API with access to the Google Docs API.
+
+The Service Account credentials should be placed in a file called `service-account-credentials.json` at the root of the project.
 
 ## Updating
 
@@ -39,4 +50,4 @@ git pull
 yarn build
 ```
 
-Make sure to also check [CHANGELOG.md](CHANGELOG.md) for breaking changes
+Be sure to also check [CHANGELOG.md](CHANGELOG.md) for breaking changes

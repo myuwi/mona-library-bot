@@ -12,6 +12,7 @@
 
 # google api credentials
 google-api-credentials.json
+service-account-credentials.json
 
 # config file
 config.json

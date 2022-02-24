@@ -59,8 +59,8 @@ export class DocumentParser {
     private async init() {
         console.log('Initializing doc parser');
         const auth = new docs.auth.GoogleAuth({
-            keyFilename: 'google-api-credentials.json',
-            scopes: ['https://www.googleapis.com/auth/documents'],
+            keyFilename: 'service-account-credentials.json',
+            scopes: ['https://www.googleapis.com/auth/documents.readonly'],
         });
 
         const authClient = await auth.getClient();
