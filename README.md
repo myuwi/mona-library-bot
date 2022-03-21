@@ -2,11 +2,22 @@
 
 # Mona Library Bot
 
-**A Discord bot for the [Mona Mains](https://discord.gg/mona) server.**
+[![Mona Mains Discord](https://img.shields.io/discord/780891070862196807?label=chat&style=flat-square)](https://discord.gg/mona)
+![GitHub tag](https://img.shields.io/github/v/tag/myuwi/mona-library-bot?label=tag&style=flat-square)
+
+**A Discord bot created for the [Mona Mains](https://discord.gg/mona) server.**
+
+[Features](#features)
+•
+[Installation](#installation)
+•
+[Configuration](#configuration)
+•
+[Updating](#updating)
 
 </div>
 
-## Key Features
+## Features
 
 - Parse a Google Docs document and transform it to Discord embeds
 - A permission system
@@ -30,9 +41,9 @@ Copy and rename the `config.json.example` to `config.json`. It should look somet
 
 ```json
 {
-    "token": "your_token_here",
+    "token": "token_here",
     "documentId": "document_id_here",
-    "ownerId": "your_id_here",
+    "ownerId": "discord_id_here",
     "defaultPrefix": "m+"
 }
 ```

@@ -37,7 +37,7 @@ export type Character = {
     rarity: number;
 };
 
-// Last updated for 2.5
+// Last updated for 2.6
 export const Characters: {
     [s: string]: Character;
 } = {
@@ -127,6 +127,11 @@ export const Characters: {
     KAMISATO_AYAKA: {
         name: 'Kamisato Ayaka',
         displayName: 'Ayaka',
+        rarity: 5,
+    },
+    KAMISATO_AYATO: {
+        name: 'Kamisato Ayato',
+        displayName: 'Ayato',
         rarity: 5,
     },
     KEQING: {

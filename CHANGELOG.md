@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0
+
+### Added
+
+- Added Kamisato Ayato
+
 ## 0.2.1
 
 ### Added

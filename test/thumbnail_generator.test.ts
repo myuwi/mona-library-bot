@@ -47,6 +47,7 @@ describe('Thumbnail Generator tests', () => {
             Characters.SHENHE,
             Characters.ROSARIA,
             Characters.GANYU,
+            Characters.KAMISATO_AYATO
         ];
 
         for (let i = 1; i <= data.length; i++) {
