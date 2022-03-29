@@ -1,6 +1,6 @@
 import { EmbedFieldData, MessageAttachment, MessageEmbed } from 'discord.js';
 import { DocElement } from '../DocumentParser';
-import { Character } from '../../GenshinData';
+import { Character, Element } from '../../GenshinData';
 import { ComboLibraryElement } from './ComboLibraryElement';
 import { ThumbnailGenerator } from '../../ThumbnailGenerator';
 import { colors } from '../../colors';
@@ -14,7 +14,7 @@ export type ComboData = {
     name: string;
     submittedBy?: string;
     description: DocElement[];
-    members: Character[];
+    members: (Character | Element)[];
     headingId?: string;
     fields: ComboField[];
 };
@@ -29,7 +29,9 @@ export class Combo extends ComboLibraryElement<ComboData> {
         });
 
         if (combo.submittedBy) {
-            embed.setFooter(`Submitted by ${combo.submittedBy}`);
+            embed.setFooter({
+                text: `Submitted by ${combo.submittedBy}`,
+            });
         }
 
         const desc: string[] = [];
@@ -90,7 +92,8 @@ export class Combo extends ComboLibraryElement<ComboData> {
 
             const imageName = combo.members
                 .map((m) => {
-                    const name = m.displayName ?? m.name;
+                    // TypeScript type checking is being dumb here
+                    const name = 'displayName' in m && m.displayName ? m.displayName : m.name;
                     return name.toLowerCase().replace(' ', '');
                 })
                 .join('-');
@@ -119,7 +122,7 @@ export class Combo extends ComboLibraryElement<ComboData> {
 
         const imageName = combo.members
             .map((m) => {
-                const name = m.displayName ?? m.name;
+                const name = 'displayName' in m && m.displayName ? m.displayName : m.name;
                 return name.toLowerCase().replace(' ', '');
             })
             .join('-');

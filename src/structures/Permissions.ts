@@ -33,7 +33,7 @@ export const testPermissions = async (command: Command, member: GuildMember) => 
             (o) => o.commandName === '*' || o.commandName === command.name
         );
 
-        const memberRoles = [...member.roles.cache.values()].sort(Role.comparePositions).reverse();
+        const memberRoles = [...member.roles.cache.values()].sort((r1, r2) => member.guild.roles.comparePositions(r2, r1));
 
         // loop over the members roles
         for (let i = 0; i < memberRoles.length; i++) {

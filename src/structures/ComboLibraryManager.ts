@@ -1,6 +1,6 @@
 import { DocumentParser, DocElement } from './DocumentParser';
 import { Guild } from 'discord.js';
-import { resolveCharacter } from '../GenshinData';
+import { fuzzySearch } from '../GenshinData';
 import { MClient } from '../client/MClient';
 import { GuildComboLibraryManager } from './GuildComboLibraryManager';
 import { ComboLibrary, ComboLibraryData } from './ComboLibrary/ComboLibrary';
@@ -183,8 +183,8 @@ export class ComboLibraryManager extends DocumentParser {
                         // Parse combo members
                         if (field.name === 'Combo Requirements') {
                             for (let j = 0; j < field.value.length; j++) {
-                                const charName = field.value[j].rawText.split('-')[0];
-                                const char = resolveCharacter(charName);
+                                const charName = field.value[j].rawText.split('-')[0].trim();
+                                const char = fuzzySearch(charName);
 
                                 if (char) {
                                     combo.members.push(char);

@@ -162,6 +162,7 @@ export class GuildComboLibraryManager {
 
                 for (let i = 0; i < diff.length; i++) {
                     const [comboIndex, message] = diff[i];
+                    console.log(`Updating ${comboIndex}`);
 
                     const edit = {
                         attachments: [],
@@ -258,6 +259,7 @@ export class GuildComboLibraryManager {
     }
 
     public async updateDirectory() {
+        console.log('Updating Directory channel');
         const libraryChannel = await this.getLibraryChannel();
         if (!libraryChannel) throw new Error('Library channel not set');
         const messageCollection = await this.getEmbedMessages(libraryChannel);
@@ -309,5 +311,7 @@ export class GuildComboLibraryManager {
             const msg = directoryChannelMessages.first();
             msg!.edit({ embeds: [infoEmbed, comboSubmissionEmbed] });
         }
+
+        console.log('Updated Directory channel');
     }
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+### Added
+
+- Fuzzy search in team member parsing
+
 ## 0.3.0
 
 ### Added

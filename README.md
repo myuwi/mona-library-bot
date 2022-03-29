@@ -19,10 +19,10 @@
 
 ## Features
 
-- Parse a Google Docs document and transform it to Discord embeds
-- A permission system
-- Automatically generate team comp images from text
-- Supports multiple servers
+- Display the contents of a Google Docs document in a Discord channel using Discord message embeds
+- A simple permission system
+- Dynamically generate team comp images from text
+- (Partially) Supports multiple servers
 
 ## Installation
 
