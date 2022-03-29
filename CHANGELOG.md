@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2
+
+### Fixed
+
+- Fixed a bug causing crash on start
+
 ## 0.4.1
 
 ### Changed

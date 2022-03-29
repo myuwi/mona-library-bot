@@ -1,6 +1,6 @@
 {
     "name": "mona-library-bot",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "Mona Library Discord Bot",
     "author": "Myuwi",
     "license": "MIT",
@@ -26,7 +26,7 @@
         "discord.js": "^13.6.0",
         "dotenv": "^16.0.0",
         "fuse.js": "^6.5.3",
-        "knex": "^1.0.4",
+        "knex": "^0.95.15",
         "sharp": "^0.30.3",
         "sqlite3": "^5.0.2",
         "text-to-image": "^5.2.0",
