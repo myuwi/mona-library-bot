@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+### Changed
+
+- Changed database client
+
 ## 0.4.0
 
 ### Added

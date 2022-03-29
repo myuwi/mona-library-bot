@@ -58,6 +58,7 @@ The Service Account credentials should be placed in a file called `service-accou
 
 ```sh
 git pull
+yarn install
 yarn build
 ```
 

@@ -3,7 +3,7 @@ import * as path from 'path';
 import { __rootdir__ } from '../root';
 
 const config = {
-    client: 'better-sqlite3',
+    client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
         filename: path.join(__rootdir__, '..', 'db.sqlite'),
