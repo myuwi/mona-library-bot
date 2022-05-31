@@ -27,9 +27,10 @@ export class Events extends BaseLoader {
             if (!eventName || !discordEvents.includes(eventName)) continue;
 
             console.log(`Loading Event: ${eventName}`);
-            const { event } = await import(path.join(eventFile));
-
+            const { [eventName]: event } = await import(path.join(eventFile));
+            
             this.client.on(eventName, event.bind(null, this.client));
+            console.log(`Loaded Event: ${eventName}`);
         }
     }
 }

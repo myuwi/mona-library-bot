@@ -27,7 +27,7 @@ export const command: Command = {
 
         const statusId = await guildLibraryManager.status();
 
-        const guildSettings = await client.db.guilds.settings.get(message.guild!.id);
+        const guildSettings = await client.db.guilds.getOrInsert(message.guild!.id);
 
         let status: string;
         switch (statusId) {
@@ -54,15 +54,11 @@ export const command: Command = {
             .setImage(
                 'https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png'
             )
-            .setFooter(client.user!.username)
+            .setFooter({ text: client.user!.username })
             .setTimestamp(Date.now())
             .addField('Status', status)
-            .addField('Library Channel', guildSettings?.sync_channel_id ? `<#${guildSettings.sync_channel_id}>` : 'Unset', true)
-            .addField(
-                'Directory Channel',
-                guildSettings?.directory_channel_id ? `<#${guildSettings.directory_channel_id}>` : 'Unset',
-                true
-            );
+            .addField('Library Channel', guildSettings?.syncChannelId ? `<#${guildSettings.syncChannelId}>` : 'Unset', true)
+            .addField('Directory Channel', guildSettings?.directoryChannelId ? `<#${guildSettings.directoryChannelId}>` : 'Unset', true);
 
         statusMessage.edit({ embeds: [embed] });
     },

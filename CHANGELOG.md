@@ -1,10 +1,32 @@
 # Changelog
 
+## 0.5.0
+
+To update from `v0.4.2` or below, run the following command to baseline the initial migration.
+
+```sh
+npx prisma migrate resolve --applied 20220408143101_initial_migration
+```
+
+After which you should apply the rest of the Prisma database migrations:
+
+```sh
+npx prisma migrate deploy
+```
+
+### Added
+
+- Added Yelan
+
+### Changed
+
+- Moved from Knex to Prisma
+
 ## 0.4.2
 
 ### Fixed
 
-- Fixed a bug causing crash on start
+- Fixed an oversight causing crash on start
 
 ## 0.4.1
 

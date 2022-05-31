@@ -114,7 +114,7 @@ export const command: Command = {
 
                 const statusId = await guildLibraryManager.status();
 
-                const guildSettings = await client.db.guilds.settings.get(message.guild!.id);
+                const guildSettings = await client.db.guilds.getOrInsert(message.guild!.id);
 
                 let status: string;
                 switch (statusId) {
@@ -141,13 +141,13 @@ export const command: Command = {
                     .setImage(
                         'https://cdn.discordapp.com/attachments/809845587905871914/875084375333687296/Namecard_Background_Mona_Starry_Sky_188px.png'
                     )
-                    .setFooter(client.user!.username)
+                    .setFooter({ text: client.user!.username })
                     .setTimestamp(Date.now())
                     .addField('Status', status)
-                    .addField('Library Channel', guildSettings?.sync_channel_id ? `<#${guildSettings.sync_channel_id}>` : 'Unset', true)
+                    .addField('Library Channel', guildSettings?.syncChannelId ? `<#${guildSettings.syncChannelId}>` : 'Unset', true)
                     .addField(
                         'Directory Channel',
-                        guildSettings?.directory_channel_id ? `<#${guildSettings.directory_channel_id}>` : 'Unset',
+                        guildSettings?.directoryChannelId ? `<#${guildSettings.directoryChannelId}>` : 'Unset',
                         true
                     );
                 // .addField('Log Channel', guildSettings?.log_channel_id ? `<#${guildSettings.log_channel_id}>` : 'Unset', true)
@@ -159,8 +159,8 @@ export const command: Command = {
             // TODO: Clear old channel when changing channels
             case 'channel': {
                 const dbColNames: Record<string, string> = {
-                    library: 'sync_channel_id',
-                    directory: 'directory_channel_id',
+                    library: 'syncChannelId',
+                    directory: 'directoryChannelId',
                 };
 
                 if (!(options[0] in dbColNames)) {
@@ -205,7 +205,7 @@ export const command: Command = {
                             });
                         }
 
-                        await client.db.guilds.settings.update(message.guild!.id, { [dbCol]: channelId });
+                        await client.db.guilds.update(message.guild!.id, { [dbCol]: channelId });
 
                         return await message.channel.send({
                             embeds: [EmbedUtils.success(`The \`${options[0]}\` channel has been set to <#${channelId}>`)],
@@ -224,7 +224,7 @@ export const command: Command = {
                                 break;
                         }
 
-                        await client.db.guilds.settings.update(message.guild!.id, { [dbCol]: null });
+                        await client.db.guilds.update(message.guild!.id, { [dbCol]: null });
 
                         return statusMessage.edit({ embeds: [EmbedUtils.success(`The \`${options[0]}\` channel has been unbound`)] });
                     default:

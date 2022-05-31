@@ -1,148 +1,169 @@
-import { knex } from './knexfile';
-import { DbGuild, DbRolePermissionOverride, DbUserPermissionOverride } from './schema';
+import { PrismaClient } from '@prisma/client';
+import type { Guild } from '.prisma/client';
+
+const prisma = new PrismaClient();
 
 export const db = {
-    knex,
+    prisma,
     guilds: {
         insert: async (guildId: string) => {
             try {
-                const rows = await knex<DbGuild>('guilds').where({ id: guildId });
-
-                if (rows.length) {
-                    throw new Error('Insert failed - Guild already exists in the database');
+                return await prisma.guild.create({
+                    data: {
+                        id: guildId,
+                    },
+                });
+            } catch (err: any) {
+                if (err?.message?.includes('Unique constraint failed on the fields: (`id`)')) {
+                    throw new Error('Guild already exists in the database.');
                 }
 
-                await knex<DbGuild>('guilds').insert({ id: guildId });
-                return true;
-            } catch (err) {
-                console.log(err);
-                return false;
+                throw new Error('Unable to insert guild.');
             }
         },
         delete: async (guildId: string) => {
-            await knex<DbGuild>('guilds').where({ id: guildId }).del();
+            try {
+                await prisma.guild.delete({
+                    where: {
+                        id: guildId,
+                    },
+                });
+            } catch (err) {
+                throw new Error("Unable to delete a guild that doesn't exist in the database.");
+            }
         },
-        settings: {
-            get: async (guildId: string) => {
-                return await knex<DbGuild>('guilds').where('id', guildId).first();
-            },
-            getPrefix: async (guildId: string) => {
-                const settings = await knex<DbGuild>('guilds').select('prefix').where('id', guildId).first();
-                const prefix = settings?.prefix;
+        get: async (guildId: string) => {
+            const guild = await prisma.guild.findUnique({
+                where: {
+                    id: guildId,
+                },
+            });
 
-                return prefix ? prefix : null;
-            },
-            update: async (guildId: string, data: Partial<Omit<DbGuild, 'id'>>) => {
-                if ('id' in data) return;
+            return guild;
+        },
+        getAll: async () => {
+            const guilds = await prisma.guild.findMany();
 
-                await knex<DbGuild>('guilds').where({ id: guildId }).update(data);
-            },
+            return guilds;
+        },
+        getOrInsert: async (guildId: string) => {
+            const guild = await db.guilds.get(guildId);
+
+            if (guild) return guild;
+
+            try {
+                return await db.guilds.insert(guildId);
+            } catch (err) {
+                console.log('db.guilds.getOrInsert was unable to inset guild:', err);
+            }
+
+            throw new Error('Unable to get or insert guild configuration.');
+        },
+        includes: async (guildId: string) => {
+            const guildCount = await prisma.guild.count({
+                where: {
+                    id: guildId,
+                },
+            });
+
+            return guildCount > 0;
+        },
+        update: async (guildId: string, data: Omit<Partial<Guild>, 'id'>) => {
+            if ('id' in data) delete (data as Partial<Guild>).id;
+
+            try {
+                return await prisma.guild.update({
+                    where: {
+                        id: guildId,
+                    },
+                    data,
+                });
+            } catch (err: any) {
+                if (err?.message?.includes('Record to update not found')) {
+                    throw new Error('Guild to update not found.');
+                }
+                throw new Error('Unable to update guild configuration.');
+            }
+        },
+        size: async () => {
+            return await db.prisma.guild.count();
         },
         permissions: {
             roles: {
                 get: async (guildId: string) => {
-                    return await knex<DbRolePermissionOverride>('role_permission_overrides').where({ guildId });
+                    return await prisma.rolePermissionOverride.findMany({
+                        where: {
+                            guildId,
+                        },
+                    });
                 },
                 getByRoleId: async (guildId: string, roleId: string) => {
-                    return await knex<DbRolePermissionOverride>('role_permission_overrides').where({
-                        guildId,
-                        roleId,
+                    return await prisma.rolePermissionOverride.findMany({
+                        where: {
+                            guildId,
+                            roleId,
+                        },
                     });
                 },
                 update: async (guildId: string, roleId: string, commandName: string, allow: boolean | null) => {
                     if (allow === null) {
-                        await knex<DbRolePermissionOverride>('role_permission_overrides')
-                            .where({
-                                guildId,
-                                roleId,
-                                commandName,
-                            })
-                            .del();
-                        return;
-                    }
-
-                    const row = await knex<DbRolePermissionOverride>('role_permission_overrides')
-                        .where({
-                            guildId,
-                            roleId,
-                            commandName,
-                        })
-                        .first();
-
-                    // Insert
-                    if (!row) {
-                        await knex<DbRolePermissionOverride>('role_permission_overrides').insert({
-                            guildId,
-                            roleId,
-                            commandName,
-                            allow,
+                        await prisma.rolePermissionOverride.delete({
+                            where: {
+                                guildId_roleId_commandName: {
+                                    guildId,
+                                    roleId,
+                                    commandName,
+                                },
+                            },
                         });
                         return;
                     }
 
-                    // Identical override already exists
-                    if (row.allow === allow) return;
-
-                    await knex<DbRolePermissionOverride>('role_permission_overrides')
-                        .where({
-                            guildId,
-                            roleId,
-                            commandName,
-                        })
-                        .update({ allow });
+                    await prisma.rolePermissionOverride.upsert({
+                        where: {
+                            guildId_roleId_commandName: {
+                                guildId,
+                                roleId,
+                                commandName,
+                            },
+                        },
+                        update: { allow },
+                        create: { guildId, roleId, commandName, allow },
+                    });
                 },
             },
             users: {
                 get: async (guildId: string) => {
-                    return await knex<DbUserPermissionOverride>('user_permission_overrides').where({ guildId });
+                    return await prisma.userPermissionOverride.findMany({ where: { guildId } });
                 },
                 getByUserId: async (guildId: string, userId: string) => {
-                    return await knex<DbUserPermissionOverride>('user_permission_overrides').where({
-                        guildId,
-                        userId,
-                    });
+                    return await prisma.userPermissionOverride.findMany({ where: { guildId, userId } });
                 },
                 update: async (guildId: string, userId: string, commandName: string, allow: boolean | null) => {
                     if (allow === null) {
-                        await knex<DbUserPermissionOverride>('user_permission_overrides')
-                            .where({
-                                guildId,
-                                userId,
-                                commandName,
-                            })
-                            .del();
-                        return;
-                    }
-
-                    const row = await knex<DbUserPermissionOverride>('user_permission_overrides')
-                        .where({
-                            guildId,
-                            userId,
-                            commandName,
-                        })
-                        .first();
-
-                    // Insert
-                    if (!row) {
-                        await knex<DbUserPermissionOverride>('user_permission_overrides').insert({
-                            guildId,
-                            userId,
-                            commandName,
-                            allow,
+                        await prisma.userPermissionOverride.delete({
+                            where: {
+                                guildId_userId_commandName: {
+                                    guildId,
+                                    userId,
+                                    commandName,
+                                },
+                            },
                         });
                         return;
                     }
 
-                    // Identical override already exists
-                    if (row.allow === allow) return;
-
-                    await knex<DbUserPermissionOverride>('user_permission_overrides')
-                        .where({
-                            guildId,
-                            userId,
-                            commandName,
-                        })
-                        .update({ allow });
+                    await prisma.userPermissionOverride.upsert({
+                        where: {
+                            guildId_userId_commandName: {
+                                guildId,
+                                userId,
+                                commandName,
+                            },
+                        },
+                        update: { allow },
+                        create: { guildId, userId, commandName, allow },
+                    });
                 },
             },
         },

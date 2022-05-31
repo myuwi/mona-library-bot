@@ -31,7 +31,9 @@ Node version 16.6.0+ is required
 ```sh
 git clone https://github.com/myuwi/mona-library-bot.git
 cd mona-library-bot
-yarn
+yarn install
+npx prisma migrate deploy
+npx prisma generate
 yarn build
 ```
 
@@ -59,6 +61,8 @@ The Service Account credentials should be placed in a file called `service-accou
 ```sh
 git pull
 yarn install
+npx prisma migrate deploy
+npx prisma generate
 yarn build
 ```
 

@@ -4,11 +4,11 @@ import { MClient } from '../client/MClient';
 import * as EmbedUtils from '../structures/EmbedUtils';
 import { testPermissions } from '../structures/Permissions';
 
-export const event = async (client: MClient, message: Message) => {
+export const messageCreate = async (client: MClient, message: Message) => {
     if (message.author.bot) return;
     if (message.channel.type !== 'GUILD_TEXT' || !message.guild) return;
 
-    const prefix = (await client.db.guilds.settings.getPrefix(message.guild.id)) || client.config.defaultPrefix;
+    const prefix = (await client.db.guilds.getOrInsert(message.guildId!)).prefix || client.config.defaultPrefix;
 
     const mention = `<@!${client.user!.id}>`;
 

@@ -38,18 +38,18 @@ export class GuildComboLibraryManager {
     }
 
     private async getLibraryChannel() {
-        const guildSettings = await this.client.db.guilds.settings.get(this.guild.id);
+        const guildSettings = await this.client.db.guilds.getOrInsert(this.guild.id);
 
         if (!guildSettings) {
             throw new Error('Guild settings not found.');
         }
 
-        if (!guildSettings.sync_channel_id) {
+        if (!guildSettings.syncChannelId) {
             return undefined;
         }
 
         try {
-            const channel = await this.guild.channels.fetch(guildSettings.sync_channel_id);
+            const channel = await this.guild.channels.fetch(guildSettings.syncChannelId);
             if (!channel || channel.type !== 'GUILD_TEXT') throw new Error('Sync channel is not a text channel.');
 
             return channel;
@@ -59,18 +59,18 @@ export class GuildComboLibraryManager {
     }
 
     private async getDirectoryChannel() {
-        const guildSettings = await this.client.db.guilds.settings.get(this.guild.id);
+        const guildSettings = await this.client.db.guilds.getOrInsert(this.guild.id);
 
         if (!guildSettings) {
             throw new Error('Guild settings not found.');
         }
 
-        if (!guildSettings.directory_channel_id) {
+        if (!guildSettings.directoryChannelId) {
             return undefined;
         }
 
         try {
-            const channel = await this.guild.channels.fetch(guildSettings.directory_channel_id);
+            const channel = await this.guild.channels.fetch(guildSettings.directoryChannelId);
             if (!channel || channel.type !== 'GUILD_TEXT') throw new Error('Directory channel is not a text channel.');
 
             return channel;

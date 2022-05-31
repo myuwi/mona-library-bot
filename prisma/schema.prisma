@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  id                      String                   @id
+  prefix                  String?
+  syncChannelId           String?                  @map("sync_channel_id")
+  directoryChannelId      String?                  @map("directory_channel_id")
+  rolePermissionOverrides RolePermissionOverride[]
+  userPermissionOverrides UserPermissionOverride[]
+
+  @@map("guilds")
+}
+
+model RolePermissionOverride {
+  guildId     String
+  roleId      String
+  commandName String
+  allow       Boolean
+  guild       Guild   @relation(fields: [guildId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([guildId, roleId, commandName])
+  @@map("role_permission_overrides")
+}
+
+model UserPermissionOverride {
+  guildId     String
+  userId      String
+  commandName String
+  allow       Boolean
+  guild       Guild   @relation(fields: [guildId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([guildId, userId, commandName])
+  @@map("user_permission_overrides")
+}

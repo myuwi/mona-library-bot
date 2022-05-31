@@ -21,11 +21,14 @@ export const command: Command = {
     permissionLevel: PermissionLevel.MEMBER,
     run: async (message: Message, args: string[], client: MClient) => {
         const command = args[0] && client.commands.get(args[0]);
-        const prefix = (await client.db.guilds.settings.getPrefix(message.guildId!)) || client.config.defaultPrefix;
+        const prefix = (await client.db.guilds.getOrInsert(message.guildId!)).prefix || client.config.defaultPrefix;
 
         if (command) {
             const embed = new MessageEmbed()
-                .setAuthor(`Help for ${command.name}`, client.user!.avatarURL()!)
+                .setAuthor({
+                    name: `Help for ${command.name}`,
+                    iconURL: client.user!.avatarURL()!,
+                })
                 .setColor(client.colors.primary)
                 .setDescription(command.description);
 
@@ -47,9 +50,12 @@ export const command: Command = {
         }
 
         const embed = new MessageEmbed()
-            .setAuthor('Command Help', client.user!.avatarURL()!)
+            .setAuthor({
+                name: 'Command Help',
+                iconURL: client.user!.avatarURL()!,
+            })
             .setColor(client.colors.primary)
-            .setFooter(`Type ${prefix}help [command] for more info.`);
+            .setFooter({ text: `Type ${prefix}help [command] for more info.` });
 
         const groupedCommands = new Collection<String, Command[]>();
 

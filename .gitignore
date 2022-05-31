@@ -18,7 +18,9 @@ service-account-credentials.json
 config.json
 
 # database files
-db.sqlite
+*.sqlite
+*.db
+*-journal
 
 npm-debug.log*
 yarn-debug.log*

@@ -21,8 +21,8 @@ export const command: Command = {
         }
 
         const dbColNames: Record<string, string> = {
-            library: 'sync_channel_id',
-            directory: 'directory_channel_id',
+            library: 'syncChannelId',
+            directory: 'directoryChannelId',
         };
 
         if (!(args[0] in dbColNames)) {
@@ -69,7 +69,7 @@ export const command: Command = {
                     });
                 }
 
-                await client.db.guilds.settings.update(message.guild!.id, { [dbCol]: channelId });
+                await client.db.guilds.update(message.guild!.id, { [dbCol]: channelId });
 
                 return await message.channel.send({
                     embeds: [EmbedUtils.success(`The \`${args[0]}\` channel has been set to <#${channelId}>`)],
@@ -88,7 +88,7 @@ export const command: Command = {
                         break;
                 }
 
-                await client.db.guilds.settings.update(message.guild!.id, { [dbCol]: null });
+                await client.db.guilds.update(message.guild!.id, { [dbCol]: null });
 
                 return statusMessage.edit({ embeds: [EmbedUtils.success(`The \`${args[0]}\` channel has been unbound`)] });
             default:

@@ -4,7 +4,6 @@ import { CommandManager } from '../structures/CommandManager';
 import { ComboLibraryManager } from '../structures/ComboLibraryManager';
 import { Events } from '../structures/Events';
 import { db } from '../database/db';
-import { createSchema } from '../database/schema';
 import { colors } from '../colors';
 import { config } from '../load-config';
 import * as path from 'path';
@@ -46,7 +45,6 @@ export class MClient extends Client {
     }
 
     public async run() {
-        await createSchema();
         await this.init();
         await this.login(this.config.token);
 

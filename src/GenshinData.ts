@@ -39,7 +39,7 @@ export type Character = {
     rarity: number;
 };
 
-// Last updated for 2.6
+// Last updated for 2.7
 export const Characters: {
     [s: string]: Character;
 } = {
@@ -237,6 +237,10 @@ export const Characters: {
     YANFEI: {
         name: 'Yanfei',
         rarity: 4,
+    },
+    YELAN: {
+        name: 'Yelan',
+        rarity: 5,
     },
     YOIMIYA: {
         name: 'Yoimiya',

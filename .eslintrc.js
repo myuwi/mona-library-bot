@@ -14,8 +14,9 @@ module.exports = {
     parserOptions: {
         sourceType: 'module',
         ecmaVersion: 2020,
+        project: './tsconfig.eslint.json',
     },
-    plugins: ['@typescript-eslint', 'import', 'promise', 'node'],
+    plugins: ['@typescript-eslint', 'deprecation', 'import', 'promise', 'node'],
     rules: {
         'no-var': 2,
         'no-unused-vars': 0,
@@ -43,6 +44,7 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 0,
         '@typescript-eslint/no-non-null-assertion': 0,
         '@typescript-eslint/ban-types': 0,
+        'deprecation/deprecation': 1,
         'promise/always-return': 2,
         'promise/no-return-wrap': 2,
         'promise/param-names': 2,
