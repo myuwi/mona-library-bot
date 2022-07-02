@@ -39,7 +39,6 @@ export type Character = {
     rarity: number;
 };
 
-// Last updated for 2.7
 export const Characters: {
     [s: string]: Character;
 } = {
@@ -141,6 +140,11 @@ export const Characters: {
     },
     KUJOU_SARA: {
         name: 'Kujou Sara',
+        rarity: 4,
+    },
+    KUKI_SHINOBU: {
+        name: 'Kuki Shinobu',
+        displayName: 'Shinobu',
         rarity: 4,
     },
     LISA: {
