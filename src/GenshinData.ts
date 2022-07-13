@@ -197,6 +197,11 @@ export const Characters: {
         name: 'Shenhe',
         rarity: 5,
     },
+    SHIKANOIN_HEIZOU: {
+        name: 'Shikanoin Heizou',
+        displayName: 'Heizou',
+        rarity: 4,
+    },
     SUCROSE: {
         name: 'Sucrose',
         rarity: 4,

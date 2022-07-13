@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.0
+
+### Added
+
+- Added Heizou
+
+## 0.6.0
+
+### Added
+
+- Added Shinobu
+
 ## 0.5.0
 
 To update from `v0.4.2` or below, run the following command to baseline the initial migration.
