@@ -79,12 +79,20 @@ export const Characters: {
         name: 'Chongyun',
         rarity: 4,
     },
+    COLLEI: {
+        name: 'Collei',
+        rarity: 4,
+    },
     DILUC: {
         name: 'Diluc',
         rarity: 5,
     },
     DIONA: {
         name: 'Diona',
+        rarity: 4,
+    },
+    DORI: {
+        name: 'Dori',
         rarity: 4,
     },
     EULA: {
@@ -214,6 +222,10 @@ export const Characters: {
     THOMA: {
         name: 'Thoma',
         rarity: 4,
+    },
+    TIGHNARI: {
+        name: 'Tighnari',
+        rarity: 5,
     },
     TRAVELER: {
         name: 'Traveler',

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+### Added
+
+- Added Collei, Dori and Tighnari
+
 ## 0.7.0
 
 ### Added
