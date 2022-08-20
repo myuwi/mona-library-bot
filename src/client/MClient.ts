@@ -11,43 +11,43 @@ import * as fs from 'fs';
 import { __rootdir__ } from '../root';
 
 export class MClient extends Client {
-    public commands: CommandManager;
-    public events: Events;
-    public comboLibraryManager: ComboLibraryManager;
-    public db: typeof db;
-    public config: typeof config;
-    public colors: typeof colors;
-    public version: string;
+  public commands: CommandManager;
+  public events: Events;
+  public comboLibraryManager: ComboLibraryManager;
+  public db: typeof db;
+  public config: typeof config;
+  public colors: typeof colors;
+  public version: string;
 
-    constructor() {
-        super({
-            intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-        });
-        this.commands = new CommandManager();
-        this.events = new Events(this);
-        this.colors = colors;
-        this.config = config;
-        this.comboLibraryManager = new ComboLibraryManager(this, this.config.documentId);
-        this.db = db;
+  constructor() {
+    super({
+      intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    });
+    this.commands = new CommandManager();
+    this.events = new Events(this);
+    this.colors = colors;
+    this.config = config;
+    this.comboLibraryManager = new ComboLibraryManager(this, this.config.documentId);
+    this.db = db;
 
-        this.version = this.getVersion();
-    }
+    this.version = this.getVersion();
+  }
 
-    private getVersion() {
-        const packageJson = path.join(__rootdir__, '..', 'package.json');
-        const version = JSON.parse(fs.readFileSync(packageJson, 'utf-8')).version;
-        return version;
-    }
+  private getVersion() {
+    const packageJson = path.join(__rootdir__, '..', 'package.json');
+    const version = JSON.parse(fs.readFileSync(packageJson, 'utf-8')).version;
+    return version;
+  }
 
-    private async init() {
-        await this.events.register();
-        await this.commands.register();
-    }
+  private async init() {
+    await this.events.register();
+    await this.commands.register();
+  }
 
-    public async run() {
-        await this.init();
-        await this.login(this.config.token);
+  public async run() {
+    await this.init();
+    await this.login(this.config.token);
 
-        return this;
-    }
+    return this;
+  }
 }

@@ -43,10 +43,10 @@ Copy and rename the `config.json.example` to `config.json`. It should look somet
 
 ```json
 {
-    "token": "token_here",
-    "documentId": "document_id_here",
-    "ownerId": "discord_id_here",
-    "defaultPrefix": "m+"
+  "token": "token_here",
+  "documentId": "document_id_here",
+  "ownerId": "discord_id_here",
+  "defaultPrefix": "m+"
 }
 ```
 
