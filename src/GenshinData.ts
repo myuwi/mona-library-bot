@@ -75,6 +75,10 @@ export const Characters: {
     name: 'Bennett',
     rarity: 4,
   },
+  CANDACE: {
+    name: 'Candace',
+    rarity: 4,
+  },
   CHONGYUN: {
     name: 'Chongyun',
     rarity: 4,
@@ -82,6 +86,10 @@ export const Characters: {
   COLLEI: {
     name: 'Collei',
     rarity: 4,
+  },
+  CYNO: {
+    name: 'Cyno',
+    rarity: 5,
   },
   DILUC: {
     name: 'Diluc',
@@ -165,6 +173,10 @@ export const Characters: {
   },
   MONA: {
     name: 'Mona',
+    rarity: 5,
+  },
+  NILOU: {
+    name: 'Nilou',
     rarity: 5,
   },
   NINGGUANG: {

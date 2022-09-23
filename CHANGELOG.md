@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.0
+
+### Added
+
+- Added Candace, Cyno and Nilou
+
+### Changed
+
+- Updated prisma to `^4.3.1`
+- Changed tab width to `2`
+
 ## 0.8.0
 
 ### Added
