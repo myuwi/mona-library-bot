@@ -163,6 +163,10 @@ export const Characters: {
     displayName: 'Shinobu',
     rarity: 4,
   },
+  LAYLA: {
+    name: 'Layla',
+    rarity: 4,
+  },
   LISA: {
     name: 'Lisa',
     rarity: 4,
@@ -173,6 +177,10 @@ export const Characters: {
   },
   MONA: {
     name: 'Mona',
+    rarity: 5,
+  },
+  NAHIDA: {
+    name: 'Nahida',
     rarity: 5,
   },
   NILOU: {
