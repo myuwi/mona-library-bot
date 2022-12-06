@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0
+
+### Added
+
+- Added Wanderer and Faruzan
+
 ## 0.10.0
 
 ### Added

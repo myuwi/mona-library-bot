@@ -107,6 +107,10 @@ export const Characters: {
     name: 'Eula',
     rarity: 5,
   },
+  FARUZAN: {
+    name: 'Faruzan',
+    rarity: 4,
+  },
   FISCHL: {
     name: 'Fischl',
     rarity: 4,
@@ -253,6 +257,11 @@ export const Characters: {
   },
   VENTI: {
     name: 'Venti',
+    rarity: 5,
+  },
+  WANDERER: {
+    name: 'Wanderer',
+    aliases: ['Scaramouche'],
     rarity: 5,
   },
   XIANGLING: {
