@@ -61,8 +61,8 @@ The Service Account credentials should be placed in a file called `service-accou
 ```sh
 git pull
 pnpm install
-npx prisma migrate deploy
-npx prisma generate
+pnpm prisma migrate deploy
+pnpm prisma generate
 pnpm build
 ```
 
