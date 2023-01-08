@@ -18,14 +18,14 @@
   },
   "dependencies": {
     "@googleapis/docs": "^0.2.0",
-    "@prisma/client": "^4.3.1",
+    "@prisma/client": "^4.8.1",
     "bufferutil": "^4.0.6",
     "chalk": "4.1.2",
     "common-tags": "^1.8.2",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "fuse.js": "^6.5.3",
-    "prisma": "^4.3.1",
+    "prisma": "^4.8.1",
     "sharp": "^0.31.3",
     "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"
