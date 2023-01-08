@@ -1,4 +1,4 @@
-import { Message, MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
+import { Message, MessageAttachment, MessageEditOptions, MessageEmbed } from 'discord.js';
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
 import { Characters, Elements, parseTeam } from '../../GenshinData';
@@ -130,7 +130,7 @@ export const command: Command = {
       })
       .join('-');
 
-    const messageOptions: MessageOptions = {
+    const messageOptions: MessageEditOptions = {
       embeds: [embed],
       files: [new MessageAttachment(image, `${imageName}.png`)],
     };

@@ -50,6 +50,10 @@ export const Characters: {
     name: 'Albedo',
     rarity: 5,
   },
+  ALHAITHAM: {
+    name: 'Alhaitham',
+    rarity: 5,
+  },
   ALOY: {
     name: 'Aloy',
     rarity: 5,
@@ -286,6 +290,10 @@ export const Characters: {
   },
   YANFEI: {
     name: 'Yanfei',
+    rarity: 4,
+  },
+  YAOYAO: {
+    name: 'Yaoyao',
     rarity: 4,
   },
   YELAN: {

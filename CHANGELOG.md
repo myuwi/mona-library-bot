@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.0
+
+### Added
+
+- Added Alhaitham and Yaoyao
+
+### Changed
+
+- Change name image generation logic
+
 ## 0.11.0
 
 ### Added
