@@ -95,6 +95,10 @@ export const Characters: {
     name: 'Cyno',
     rarity: 5,
   },
+  DEHYA: {
+    name: 'Dehya',
+    rarity: 5,
+  },
   DILUC: {
     name: 'Diluc',
     rarity: 5,
@@ -182,6 +186,10 @@ export const Characters: {
   LUMINE: {
     name: 'Lumine',
     rarity: 5,
+  },
+  MIKA: {
+    name: 'Mika',
+    rarity: 4,
   },
   MONA: {
     name: 'Mona',

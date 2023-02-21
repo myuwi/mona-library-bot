@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.13.0
+
+### Added
+
+- Added Dehya and Mika
+
+### Removed
+
+- Removed unnecessary assets
+
 ## 0.12.0
 
 ### Added
