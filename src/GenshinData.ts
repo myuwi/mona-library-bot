@@ -67,6 +67,10 @@ export const Characters: {
     displayName: 'Itto',
     rarity: 5,
   },
+  BAIZHU: {
+    name: 'Baizhu',
+    rarity: 5,
+  },
   BARBARA: {
     name: 'Barbara',
     rarity: 4,
@@ -157,6 +161,10 @@ export const Characters: {
     name: 'Kamisato Ayato',
     displayName: 'Ayato',
     rarity: 5,
+  },
+  KAVEH: {
+    name: 'Kaveh',
+    rarity: 4,
   },
   KEQING: {
     name: 'Keqing',
