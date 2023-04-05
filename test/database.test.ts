@@ -1,6 +1,9 @@
 import path from 'path';
 import dotenv from 'dotenv';
-import { exec } from 'child_process';
+import childProcess from 'child_process';
+import util from 'util';
+const exec = util.promisify(childProcess.exec);
+
 dotenv.config({ path: path.resolve(process.cwd(), '.env.test') });
 
 import { db } from '../src/database/db';
