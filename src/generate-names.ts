@@ -8,8 +8,8 @@ import { Character, Characters, Element, Elements, getCharacterFileName } from '
       displayName: '--',
       rarity: 1,
     },
-    ...Object.values(Characters),
-    ...Object.values(Elements),
+    ...Characters,
+    ...Elements,
   ];
 
   data.forEach(async (el) => {

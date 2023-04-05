@@ -17,18 +17,16 @@ export const command: Command = {
         .map((e) => `\`${e.name}\``)
         .join(', ');
 
-      const chars = Object.values(Characters)
-        .map((c) => {
-          let aliases = [];
-          if (c.displayName) aliases.push(c.displayName);
-          if (c.aliases && c.aliases.length) aliases = [...aliases, ...c.aliases];
+      const chars = Characters.map((c) => {
+        let aliases = [];
+        if (c.displayName) aliases.push(c.displayName);
+        if (c.aliases && c.aliases.length) aliases = [...aliases, ...c.aliases];
 
-          let str = c.name;
-          if (aliases.length) str += ` (${aliases.join(', ')})`;
+        let str = c.name;
+        if (aliases.length) str += ` (${aliases.join(', ')})`;
 
-          return `\`${str}\``;
-        })
-        .join(', ');
+        return `\`${str}\``;
+      }).join(', ');
 
       return await message.channel.send(`**Available elements:**\n${elements}\n\n**Available characters:**\n${chars}`);
     }
