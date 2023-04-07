@@ -1,14 +1,14 @@
-import { Client, Intents } from 'discord.js';
-
-import { CommandManager } from '../structures/CommandManager';
-import { ComboLibraryManager } from '../structures/ComboLibraryManager';
-import { Events } from '../structures/Events';
-import { db } from '../database/db';
-import { colors } from '../colors';
-import { config } from '../load-config';
-import * as path from 'path';
+import { Client, GatewayIntentBits } from 'discord.js';
 import * as fs from 'fs';
+import * as path from 'path';
+
+import { colors } from '../colors';
+import { db } from '../database/db';
+import { config } from '../load-config';
 import { __rootdir__ } from '../root';
+import { ComboLibraryManager } from '../structures/ComboLibraryManager';
+import { CommandManager } from '../structures/CommandManager';
+import { Events } from '../structures/Events';
 
 export class MClient extends Client {
   public commands: CommandManager;
@@ -21,7 +21,7 @@ export class MClient extends Client {
 
   constructor() {
     super({
-      intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
     });
     this.commands = new CommandManager();
     this.events = new Events(this);

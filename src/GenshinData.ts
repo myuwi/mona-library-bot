@@ -35,7 +35,7 @@ export type Character = {
   rarity: number;
 };
 
-export const Characters: Readonly<Character[]> = [
+export const Characters = [
   {
     name: 'Aether',
     rarity: 5,
@@ -322,7 +322,12 @@ export const Characters: Readonly<Character[]> = [
     name: 'Zhongli',
     rarity: 5,
   },
-] as const;
+] as const satisfies Readonly<Character[]>;
+
+export type CharacterName = typeof Characters[number]['name'];
+
+export const getCharacterByName = <T extends CharacterName>(characterName: T): Character =>
+  Characters.find((c) => c.name === characterName || ('aliases' in c && c.aliases.some((a: string) => a === characterName)))!;
 
 const fuse = new Fuse([...Characters, ...Elements], {
   includeScore: true,

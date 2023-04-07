@@ -1,5 +1,6 @@
-import { Formatters, Message } from 'discord.js';
+import { Message, codeBlock } from 'discord.js';
 import { inspect } from 'util';
+
 import { MClient } from '../../client/MClient';
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
@@ -35,7 +36,7 @@ export const command: Command = {
 
       if (typeof evaled !== 'string') evaled = inspect(evaled);
 
-      await message.channel.send(Formatters.codeBlock(clean(evaled)));
+      await message.channel.send(codeBlock(clean(evaled)));
     } catch (err: any) {
       // if (typeof err !== 'string') return console.log(err);
 

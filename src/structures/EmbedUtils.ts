@@ -1,4 +1,5 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+
 import { colors } from '../colors';
 
 export const singleLineEmbed = (message: string, status?: 'INFO' | 'SUCCESS' | 'ERROR') => {
@@ -21,10 +22,7 @@ export const singleLineEmbed = (message: string, status?: 'INFO' | 'SUCCESS' | '
 
   const m = icon ? `${icon} ${String.fromCharCode(8203)} ${String.fromCharCode(8203)} ${message}` : message;
 
-  return new MessageEmbed({
-    color,
-    description: m,
-  });
+  return new EmbedBuilder().setColor(color).setDescription(m);
 };
 
 export const info = (message: string) => singleLineEmbed(message, 'INFO');

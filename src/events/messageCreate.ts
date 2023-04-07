@@ -1,12 +1,13 @@
-import { Message } from 'discord.js';
 import chalk from 'chalk';
+import { ChannelType, Message } from 'discord.js';
+
 import { MClient } from '../client/MClient';
 import * as EmbedUtils from '../structures/EmbedUtils';
 import { testPermissions } from '../structures/Permissions';
 
 export const messageCreate = async (client: MClient, message: Message) => {
   if (message.author.bot) return;
-  if (message.channel.type !== 'GUILD_TEXT' || !message.guild) return;
+  if (message.channel.type !== ChannelType.GuildText || !message.guild) return;
 
   const prefix = (await client.db.guilds.getOrInsert(message.guildId!)).prefix || client.config.defaultPrefix;
 

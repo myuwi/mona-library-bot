@@ -1,10 +1,9 @@
-import { Constants } from 'discord.js';
-
+import { Events as ClientEvents } from 'discord.js';
 import * as path from 'path';
 
+import { MClient } from '../client/MClient';
 import { __rootdir__ } from '../root';
 import { BaseLoader } from './BaseLoader';
-import { MClient } from '../client/MClient';
 
 export class Events extends BaseLoader {
   public client: MClient;
@@ -18,7 +17,7 @@ export class Events extends BaseLoader {
     const eventsRoot = path.join(__rootdir__, 'events');
 
     const eventFiles = await this.readdirRecursive(eventsRoot);
-    const discordEvents = Object.values(Constants.Events);
+    const discordEvents = Object.values(ClientEvents) as string[];
 
     for (const eventFile of eventFiles) {
       if (!/\.(t|j)s$/.test(eventFile)) continue;

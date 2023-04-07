@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { EmbedBuilder, Message } from 'discord.js';
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
 import { PermissionLevel } from '../../structures/Permissions';
@@ -36,7 +36,7 @@ export const command: Command = {
     if (!mode) {
       const roleOverrides = await client.db.guilds.permissions.roles.get(message.guild!.id);
 
-      const embed = new MessageEmbed().setTitle('Permissions overrides').setColor(client.colors.primary);
+      const embed = new EmbedBuilder().setTitle('Permissions overrides').setColor(client.colors.primary);
 
       const roleOverrideArr = [];
 
@@ -46,7 +46,7 @@ export const command: Command = {
       }
 
       if (roleOverrideArr.length) {
-        embed.addField('Roles', roleOverrideArr.join('\n'));
+        embed.addFields({ name: 'Roles', value: roleOverrideArr.join('\n') });
       }
 
       const userOverrides = await client.db.guilds.permissions.users.get(message.guild!.id);
@@ -58,10 +58,10 @@ export const command: Command = {
       }
 
       if (userOverrideArr.length) {
-        embed.addField('Users', userOverrideArr.join('\n'));
+        embed.addFields({ name: 'Users', value: userOverrideArr.join('\n') });
       }
 
-      if (!embed.fields.length) {
+      if (!embed.data.fields?.length) {
         embed.setDescription('No permissions overrides found on this server');
       }
 

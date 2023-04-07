@@ -1,7 +1,7 @@
-import { Message, MessageAttachment, MessageEditOptions, MessageEmbed } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, Message, MessageEditOptions } from 'discord.js';
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
-import { Characters, Elements, parseTeam } from '../../GenshinData';
+import { Character, Characters, Elements, parseTeam } from '../../GenshinData';
 import { GeneratorOptions, OptionsError, ThumbnailGenerator } from '../../ThumbnailGenerator';
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
@@ -17,7 +17,7 @@ export const command: Command = {
         .map((e) => `\`${e.name}\``)
         .join(', ');
 
-      const chars = Characters.map((c) => {
+      const chars = Characters.map((c: Character) => {
         let aliases = [];
         if (c.displayName) aliases.push(c.displayName);
         if (c.aliases && c.aliases.length) aliases = [...aliases, ...c.aliases];
@@ -116,10 +116,7 @@ export const command: Command = {
       });
     }
 
-    const embed = new MessageEmbed({
-      title: chars.map((c) => c.name).join(', '),
-      color: client.colors.primary,
-    });
+    const embed = new EmbedBuilder().setTitle(chars.map((c) => c.name).join(', ')).setColor(client.colors.primary);
 
     const imageName = chars
       .map((m) => {
@@ -130,7 +127,7 @@ export const command: Command = {
 
     const messageOptions: MessageEditOptions = {
       embeds: [embed],
-      files: [new MessageAttachment(image, `${imageName}.png`)],
+      files: [new AttachmentBuilder(image, { name: `${imageName}.png` })],
     };
 
     embed.setImage(`attachment://${imageName}.png`);

@@ -1,10 +1,7 @@
 import { access, mkdir, writeFile } from 'fs/promises';
 import path from 'path';
-import { Characters, Elements, parseTeam } from '../src/GenshinData';
+import { getCharacterByName, parseTeam } from '../src/GenshinData';
 import { ThumbnailGenerator } from '../src/ThumbnailGenerator';
-
-const getCharacter = (characterName: string) =>
-  Characters.find((c) => c.name === characterName || c.aliases?.some((a) => a === characterName));
 
 const outputdir = path.join(__dirname, 'output');
 
@@ -32,7 +29,7 @@ it('should generate image with background', async () => {
 });
 
 it('should generate image without background', async () => {
-  const data = ['Kamisato Ayaka', 'Mona', 'Kaedehara Kazuha', 'Diona'].map((c) => getCharacter(c)!);
+  const data = (['Kamisato Ayaka', 'Mona', 'Kaedehara Kazuha', 'Diona'] as const).map((c) => getCharacterByName(c));
 
   const buffer = await ThumbnailGenerator.team(data, { background: false });
   expect(buffer).toBeInstanceOf(Buffer);
@@ -41,8 +38,8 @@ it('should generate image without background', async () => {
 });
 
 it('should generate images with different sizes', async () => {
-  const data = ['Kamisato Ayaka', 'Mona', 'Kaedehara Kazuha', 'Diona', 'Shenhe', 'Rosaria', 'Ganyu', 'Kamisato Ayato'].map(
-    (c) => getCharacter(c)!
+  const data = (['Kamisato Ayaka', 'Mona', 'Kaedehara Kazuha', 'Diona', 'Shenhe', 'Rosaria', 'Ganyu', 'Kamisato Ayato'] as const).map((c) =>
+    getCharacterByName(c)
   );
 
   for (let i = 1; i <= data.length; i++) {

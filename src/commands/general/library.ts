@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { ChannelType, EmbedBuilder, Message } from 'discord.js';
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
 import { LibraryPurgeResponse, LibraryUpdateResponse, LibraryStatuses } from '../../structures/GuildComboLibraryManager';
@@ -131,7 +131,7 @@ export const command: Command = {
             status = 'Unknown';
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
           .setTitle('Combo Library Status')
           .setColor(client.colors.primary)
           .setImage(
@@ -139,9 +139,15 @@ export const command: Command = {
           )
           .setFooter({ text: client.user!.username })
           .setTimestamp(Date.now())
-          .addField('Status', status)
-          .addField('Library Channel', guildSettings?.syncChannelId ? `<#${guildSettings.syncChannelId}>` : 'Unset', true)
-          .addField('Directory Channel', guildSettings?.directoryChannelId ? `<#${guildSettings.directoryChannelId}>` : 'Unset', true);
+          .addFields(
+            { name: 'Status', value: status },
+            { name: 'Library Channel', value: guildSettings?.syncChannelId ? `<#${guildSettings.syncChannelId}>` : 'Unset', inline: true },
+            {
+              name: 'Directory Channel',
+              value: guildSettings?.directoryChannelId ? `<#${guildSettings.directoryChannelId}>` : 'Unset',
+              inline: true,
+            }
+          );
         // .addField('Log Channel', guildSettings?.log_channel_id ? `<#${guildSettings.log_channel_id}>` : 'Unset', true)
         // .addField('Auto Sync', guildSettings?.auto_sync ? 'Enabled' : 'Disabled', true);
 
@@ -183,7 +189,7 @@ export const command: Command = {
                 });
               }
 
-              if (fChannel.type !== 'GUILD_TEXT') {
+              if (fChannel.type !== ChannelType.GuildText) {
                 return message.channel.send({
                   embeds: [EmbedUtils.error("The channel with the specified id isn't a text channel")],
                 });

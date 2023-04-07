@@ -1,4 +1,4 @@
-import { Collection, Message, MessageEmbed } from 'discord.js';
+import { Collection, Message, EmbedBuilder } from 'discord.js';
 import { MClient } from '../../client/MClient';
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
@@ -24,7 +24,7 @@ export const command: Command = {
     const prefix = (await client.db.guilds.getOrInsert(message.guildId!)).prefix || client.config.defaultPrefix;
 
     if (command) {
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setAuthor({
           name: `Help for ${command.name}`,
           iconURL: client.user!.avatarURL()!,
@@ -33,23 +33,23 @@ export const command: Command = {
         .setDescription(command.description);
 
       if (command.usage) {
-        embed.addField('Usage', `\`${prefix}${command.usage}\``);
+        embed.addFields({ name: 'Usage', value: `\`${prefix}${command.usage}\`` });
       }
 
       if (command.examples?.length) {
         const examples = command.examples.map((s) => `\`${prefix}${s.value}\`\n${s.description}`).join('\n\n');
-        embed.addField('Examples', examples);
+        embed.addFields({ name: 'Examples', value: examples });
       }
 
       if (command.aliases?.length) {
         const aliases = command.aliases.map((s) => `\`${s}\``).join('\n');
-        embed.addField('Aliases', aliases);
+        embed.addFields({ name: 'Aliases', value: aliases });
       }
 
       return message.channel.send({ embeds: [embed] });
     }
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({
         name: 'Command Help',
         iconURL: client.user!.avatarURL()!,
@@ -77,7 +77,7 @@ export const command: Command = {
         })
         .join(' ');
 
-      embed.addField(`${group[0].group} Commands`, cmds);
+      embed.addFields({ name: `${group[0].group} Commands`, value: cmds });
     }
 
     return message.channel.send({ embeds: [embed] });

@@ -1,4 +1,5 @@
-import { Message } from 'discord.js';
+import { ChannelType, Message } from 'discord.js';
+
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
 import { PermissionLevel } from '../../structures/Permissions';
@@ -55,7 +56,7 @@ export const command: Command = {
             });
           }
 
-          if (fChannel.type !== 'GUILD_TEXT') {
+          if (fChannel.type !== ChannelType.GuildText) {
             return message.channel.send({
               embeds: [EmbedUtils.error("The channel with the specified id isn't a text channel")],
             });

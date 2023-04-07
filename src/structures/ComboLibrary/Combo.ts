@@ -1,9 +1,10 @@
-import { EmbedFieldData, MessageAttachment, MessageEmbed } from 'discord.js';
-import { DocElement } from '../DocumentParser';
+import { APIEmbedField, AttachmentBuilder, EmbedBuilder } from 'discord.js';
+
 import { Character, Element } from '../../GenshinData';
-import { ComboLibraryElement } from './ComboLibraryElement';
 import { ThumbnailGenerator } from '../../ThumbnailGenerator';
 import { colors } from '../../colors';
+import { DocElement } from '../DocumentParser';
+import { ComboLibraryElement } from './ComboLibraryElement';
 
 export type ComboField = {
   name: string;
@@ -23,10 +24,7 @@ const ZERO_WIDTH_SPACE = String.fromCharCode(8203);
 
 export class Combo extends ComboLibraryElement<ComboData> {
   protected createEmbed(combo: ComboData) {
-    const embed = new MessageEmbed({
-      title: combo.name,
-      color: colors.primary,
-    });
+    const embed = new EmbedBuilder().setTitle(combo.name).setColor(colors.primary);
 
     if (combo.submittedBy) {
       embed.setFooter({
@@ -50,7 +48,7 @@ export class Combo extends ComboLibraryElement<ComboData> {
     desc.push(ZERO_WIDTH_SPACE);
     embed.setDescription(desc.join('\n'));
 
-    const embedFields: EmbedFieldData[] = [];
+    const embedFields: APIEmbedField[] = [];
 
     // Iterate over fields
     for (let k = 0; k < combo.fields.length; k++) {
@@ -67,7 +65,7 @@ export class Combo extends ComboLibraryElement<ComboData> {
 
       lines.push(ZERO_WIDTH_SPACE);
 
-      const embedField: EmbedFieldData = {
+      const embedField = {
         name: field.name,
         value: lines.join('\n'),
       };
@@ -127,6 +125,6 @@ export class Combo extends ComboLibraryElement<ComboData> {
       })
       .join('-');
 
-    return [new MessageAttachment(image, `${imageName}.png`)];
+    return [new AttachmentBuilder(image, { name: `${imageName}.png` })];
   }
 }

@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import type { Guild } from '.prisma/client';
+import { Guild, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 

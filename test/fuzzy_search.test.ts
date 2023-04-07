@@ -1,10 +1,7 @@
-import { Characters, fuzzySearch } from '../src/GenshinData';
+import { CharacterName, fuzzySearch, getCharacterByName } from '../src/GenshinData';
 
-const getCharacter = (characterName: string) =>
-  Characters.find((c) => c.name === characterName || c.aliases?.some((a) => a === characterName));
-
-const expectEqual = (queries: string[], expected: string) => {
-  const character = getCharacter(expected);
+const expectEqual = (queries: string[], expected: CharacterName) => {
+  const character = getCharacterByName(expected);
   expect(character).not.toBeUndefined();
 
   for (let i = 0; i < queries.length; i++) {

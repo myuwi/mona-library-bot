@@ -1,4 +1,5 @@
-import { Collection, Guild, Message, MessageEditOptions, MessageEmbed, TextChannel } from 'discord.js';
+import { ChannelType, Collection, EmbedBuilder, Guild, Message, MessageEditOptions, TextChannel } from 'discord.js';
+
 import { MClient } from '../client/MClient';
 import { colors } from '../colors';
 import { sleep } from '../utils';
@@ -50,7 +51,7 @@ export class GuildComboLibraryManager {
 
     try {
       const channel = await this.guild.channels.fetch(guildSettings.syncChannelId);
-      if (!channel || channel.type !== 'GUILD_TEXT') throw new Error('Sync channel is not a text channel.');
+      if (channel?.type !== ChannelType.GuildText) throw new Error('Sync channel is not a text channel.');
 
       return channel;
     } catch (err) {
@@ -71,7 +72,7 @@ export class GuildComboLibraryManager {
 
     try {
       const channel = await this.guild.channels.fetch(guildSettings.directoryChannelId);
-      if (!channel || channel.type !== 'GUILD_TEXT') throw new Error('Directory channel is not a text channel.');
+      if (channel?.type !== ChannelType.GuildText) throw new Error('Directory channel is not a text channel.');
 
       return channel;
     } catch (err) {
@@ -266,31 +267,32 @@ export class GuildComboLibraryManager {
 
     const messages = [...messageCollection.values()].reverse();
 
-    const infoEmbed = new MessageEmbed({
-      title: "Mona's Combo Library Directory",
-      color: colors.primary,
-      description: `This is a directory channel from where you can quickly access each combo that has been submitted to <#${libraryChannel.id}>.\n`,
-    });
+    const infoEmbed = new EmbedBuilder()
+      .setTitle("Mona's Combo Library Directory")
+      .setColor(colors.primary)
+      .setDescription(
+        `This is a directory channel from where you can quickly access each combo that has been submitted to <#${libraryChannel.id}>.\n`
+      );
 
-    const comboSubmissionEmbed = new MessageEmbed({
-      title: 'How to submit a combo',
-      color: colors.primary,
-      description:
-        'To submit your combo to the combo library, go to <#816715309314342952> and follow the instructions on the [pinned message](https://discord.com/channels/780891070862196807/816715309314342952/816858472372764692).',
-      footer: {
+    const comboSubmissionEmbed = new EmbedBuilder()
+      .setTitle('How to submit a combo')
+      .setColor(colors.primary)
+      .setDescription(
+        'To submit your combo to the combo library, go to <#816715309314342952> and follow the instructions on the [pinned message](https://discord.com/channels/780891070862196807/816715309314342952/816858472372764692).'
+      )
+      .setFooter({
         text: "If you're having trouble with your combo submission, feel free to ask for help in #questions.",
-      },
-    });
+      });
 
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
       const embed = message.embeds[0];
 
       if (!embed.fields.length) {
-        infoEmbed.description += `\n**${embed.title!}**\n`;
+        infoEmbed.data.description += `\n**${embed.title!}**\n`;
       } else {
         const messageLink = `https://discord.com/channels/${message.guildId!}/${message.channelId!}/${message.id}`;
-        infoEmbed.description += `▸ [${embed.title!}](${messageLink})\n`;
+        infoEmbed.data.description += `▸ [${embed.title!}](${messageLink})\n`;
       }
     }
 
@@ -301,7 +303,7 @@ export class GuildComboLibraryManager {
     directoryChannelMessages.sweep((m) => {
       if (m.author.id !== this.client.user!.id) return true;
       if (!m.embeds.length) return true;
-      if (m.embeds[0].title !== infoEmbed.title) return true;
+      if (m.embeds[0].title !== infoEmbed.data.title) return true;
       return false;
     });
 

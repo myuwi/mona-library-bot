@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, EmbedBuilder } from 'discord.js';
 import { MClient } from '../../client/MClient';
 import * as EmbedUtils from '../../structures/EmbedUtils';
 import { LibraryStatuses } from '../../structures/GuildComboLibraryManager';
@@ -48,7 +48,7 @@ export const command: Command = {
         status = 'Unknown';
     }
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Combo Library Status')
       .setColor(client.colors.primary)
       .setImage(
@@ -56,9 +56,15 @@ export const command: Command = {
       )
       .setFooter({ text: client.user!.username })
       .setTimestamp(Date.now())
-      .addField('Status', status)
-      .addField('Library Channel', guildSettings?.syncChannelId ? `<#${guildSettings.syncChannelId}>` : 'Unset', true)
-      .addField('Directory Channel', guildSettings?.directoryChannelId ? `<#${guildSettings.directoryChannelId}>` : 'Unset', true);
+      .addFields(
+        { name: 'Status', value: status },
+        { name: 'Library Channel', value: guildSettings?.syncChannelId ? `<#${guildSettings.syncChannelId}>` : 'Unset', inline: true },
+        {
+          name: 'Directory Channel',
+          value: guildSettings?.directoryChannelId ? `<#${guildSettings.directoryChannelId}>` : 'Unset',
+          inline: true,
+        }
+      );
 
     statusMessage.edit({ embeds: [embed] });
   },

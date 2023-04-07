@@ -1,4 +1,4 @@
-import { GuildMember, Role } from 'discord.js';
+import { GuildMember } from 'discord.js';
 import { MClient } from '../client/MClient';
 import { Command } from '../types';
 
@@ -54,11 +54,11 @@ export const testPermissions = async (command: Command, member: GuildMember) => 
     case PermissionLevel.BOT_OWNER:
       return member.id === client.config.ownerId;
     case PermissionLevel.ADMIN:
-      return member.id === member.guild.ownerId || member.permissions.any(['MANAGE_GUILD'], true);
+      return member.id === member.guild.ownerId || member.permissions.any(['ManageGuild'], true);
     case PermissionLevel.MODERATOR:
-      return member.id === member.guild.ownerId || member.permissions.any(['MANAGE_GUILD', 'MANAGE_CHANNELS'], true);
+      return member.id === member.guild.ownerId || member.permissions.any(['ManageChannels', 'ManageChannels'], true);
     case PermissionLevel.HELPER:
-      return member.id === member.guild.ownerId || member.permissions.any(['MANAGE_GUILD', 'MANAGE_CHANNELS', 'MANAGE_MESSAGES'], true);
+      return member.id === member.guild.ownerId || member.permissions.any(['ManageChannels', 'ManageGuild', 'ManageMessages'], true);
     case PermissionLevel.MEMBER:
       return true;
   }
