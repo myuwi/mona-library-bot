@@ -1,13 +1,15 @@
+import { PrismaClient } from '@prisma/client';
 import childProcess from 'child_process';
-import dotenv from 'dotenv';
-import path from 'path';
 import util from 'util';
 
-import { db } from '../src/database/db';
+import { db as DB } from '../src/database/db';
 
 const exec = util.promisify(childProcess.exec);
 
-dotenv.config({ path: path.resolve(process.cwd(), '.env.test') });
+process.env['DATABASE_URL'] = 'file:../test/test.db';
+
+const prisma = new PrismaClient();
+const db = DB(prisma);
 
 beforeAll(async () => {
   await exec('npx prisma db push --force-reset', {

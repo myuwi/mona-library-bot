@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client';
 import { Client, GatewayIntentBits } from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -10,11 +11,13 @@ import { ComboLibraryManager } from '../structures/ComboLibraryManager';
 import { CommandManager } from '../structures/CommandManager';
 import { Events } from '../structures/Events';
 
+const prisma = new PrismaClient();
+
 export class MClient extends Client {
   public commands: CommandManager;
   public events: Events;
   public comboLibraryManager: ComboLibraryManager;
-  public db: typeof db;
+  public db;
   public config: typeof config;
   public colors: typeof colors;
   public version: string;
@@ -28,7 +31,7 @@ export class MClient extends Client {
     this.colors = colors;
     this.config = config;
     this.comboLibraryManager = new ComboLibraryManager(this, this.config.documentId);
-    this.db = db;
+    this.db = db(prisma);
 
     this.version = this.getVersion();
   }
