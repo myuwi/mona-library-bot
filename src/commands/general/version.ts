@@ -1,10 +1,11 @@
+import child_process from 'child_process';
 import { Message } from 'discord.js';
+import util from 'util';
+
 import { MClient } from '../../client/MClient';
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
 
-import util from 'util';
-import child_process from 'child_process';
 const exec = util.promisify(child_process.exec);
 
 export const command: Command = {

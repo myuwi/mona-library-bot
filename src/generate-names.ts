@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+
 import { Character, Characters, Element, Elements, getCharacterFileName } from './GenshinData';
 
 (async () => {

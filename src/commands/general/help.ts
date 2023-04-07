@@ -1,4 +1,5 @@
-import { Collection, Message, EmbedBuilder } from 'discord.js';
+import { Collection, EmbedBuilder, Message } from 'discord.js';
+
 import { MClient } from '../../client/MClient';
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';

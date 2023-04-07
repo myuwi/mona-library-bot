@@ -1,5 +1,6 @@
 import { access, mkdir, writeFile } from 'fs/promises';
 import path from 'path';
+
 import { getCharacterByName, parseTeam } from '../src/GenshinData';
 import { ThumbnailGenerator } from '../src/ThumbnailGenerator';
 

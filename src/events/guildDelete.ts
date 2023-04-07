@@ -1,4 +1,5 @@
 import { Guild } from 'discord.js';
+
 import { MClient } from '../client/MClient';
 
 export const guildDelete = async (client: MClient, guild: Guild) => {

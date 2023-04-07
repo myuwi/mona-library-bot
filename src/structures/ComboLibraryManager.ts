@@ -1,11 +1,12 @@
-import { DocumentParser, DocElement } from './DocumentParser';
 import { Guild } from 'discord.js';
+
 import { fuzzySearch } from '../GenshinData';
 import { MClient } from '../client/MClient';
-import { GuildComboLibraryManager } from './GuildComboLibraryManager';
-import { ComboLibrary, ComboLibraryData } from './ComboLibrary/ComboLibrary';
 import { Combo, ComboData } from './ComboLibrary/Combo';
 import { ComboCategory, ComboCategoryData } from './ComboLibrary/ComboCategory';
+import { ComboLibrary, ComboLibraryData } from './ComboLibrary/ComboLibrary';
+import { DocElement, DocumentParser } from './DocumentParser';
+import { GuildComboLibraryManager } from './GuildComboLibraryManager';
 
 export type ComboField = {
   name: string;

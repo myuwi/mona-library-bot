@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+
 import { Character, Element, getCharacterFileName } from './GenshinData';
 
 export type GeneratorOptions = {

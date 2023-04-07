@@ -1,5 +1,4 @@
 import { Collection } from 'discord.js';
-
 import * as path from 'path';
 
 import { __rootdir__ } from '../root';

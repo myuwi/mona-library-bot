@@ -1,5 +1,5 @@
-import { ComboLibraryElement } from './ComboLibraryElement';
 import { ComboCategory } from './ComboCategory';
+import { ComboLibraryElement } from './ComboLibraryElement';
 
 export type ComboLibraryData = {
   categories: ComboCategory[];

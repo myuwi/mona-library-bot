@@ -1,4 +1,5 @@
 import { Message } from 'discord.js';
+
 import { PermissionLevel } from '../../structures/Permissions';
 import { Command } from '../../types';
 

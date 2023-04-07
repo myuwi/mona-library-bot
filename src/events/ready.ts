@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+
 import { MClient } from '../client/MClient';
 
 export const ready = async (client: MClient) => {

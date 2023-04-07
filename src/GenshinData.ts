@@ -324,7 +324,7 @@ export const Characters = [
   },
 ] as const satisfies Readonly<Character[]>;
 
-export type CharacterName = typeof Characters[number]['name'];
+export type CharacterName = (typeof Characters)[number]['name'];
 
 export const getCharacterByName = <T extends CharacterName>(characterName: T): Character =>
   Characters.find((c) => c.name === characterName || ('aliases' in c && c.aliases.some((a: string) => a === characterName)))!;

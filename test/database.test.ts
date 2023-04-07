@@ -1,12 +1,13 @@
-import path from 'path';
-import dotenv from 'dotenv';
 import childProcess from 'child_process';
+import dotenv from 'dotenv';
+import path from 'path';
 import util from 'util';
+
+import { db } from '../src/database/db';
+
 const exec = util.promisify(childProcess.exec);
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.test') });
-
-import { db } from '../src/database/db';
 
 beforeAll(async () => {
   await exec('npx prisma db push --force-reset', {
