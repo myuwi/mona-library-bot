@@ -165,6 +165,10 @@ export const Characters = [
     rarity: 5,
   },
   {
+    name: 'Kirara',
+    rarity: 4,
+  },
+  {
     name: 'Klee',
     rarity: 5,
   },

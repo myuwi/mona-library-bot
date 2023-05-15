@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.15.0
+
+### Added
+
+- Added Kirara
+
+### Changed
+
+- Cleaned up internal logic
+
 ## 0.14.0
 
 ### Added
