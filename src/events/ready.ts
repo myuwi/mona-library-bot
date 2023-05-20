@@ -1,7 +1,10 @@
-import chalk from 'chalk';
+import { Events } from "discord.js";
+import { defineEvent } from "../lib/events";
 
-import { MClient } from '../client/MClient';
-
-export const ready = async (client: MClient) => {
-  console.log(chalk.cyan(`Logged in as ${client.user!.tag}`));
-};
+export default defineEvent({
+  name: Events.ClientReady,
+  once: true,
+  run(client) {
+    console.log(`Logged in as ${client.user!.tag}`);
+  },
+});

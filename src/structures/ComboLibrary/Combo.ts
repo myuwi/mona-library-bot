@@ -1,10 +1,9 @@
-import { APIEmbedField, AttachmentBuilder, EmbedBuilder } from 'discord.js';
-
-import { Character, Element } from '../../GenshinData';
-import { ThumbnailGenerator } from '../../ThumbnailGenerator';
-import { colors } from '../../colors';
-import { DocElement } from '../DocumentParser';
-import { ComboLibraryElement } from './ComboLibraryElement';
+import { APIEmbedField, AttachmentBuilder, EmbedBuilder } from "discord.js";
+import { Character, Element } from "../../GenshinData";
+import { colors } from "../../colors";
+import { team } from "../../imageGenerator";
+import { DocElement } from "../DocumentParser";
+import { ComboLibraryElement } from "./ComboLibraryElement";
 
 export type ComboField = {
   name: string;
@@ -24,7 +23,9 @@ const ZERO_WIDTH_SPACE = String.fromCharCode(8203);
 
 export class Combo extends ComboLibraryElement<ComboData> {
   protected createEmbed(combo: ComboData) {
-    const embed = new EmbedBuilder().setTitle(combo.name).setColor(colors.primary);
+    const embed = new EmbedBuilder()
+      .setTitle(combo.name)
+      .setColor(colors.primary);
 
     if (combo.submittedBy) {
       embed.setFooter({
@@ -33,11 +34,9 @@ export class Combo extends ComboLibraryElement<ComboData> {
     }
 
     const desc: string[] = [];
-    for (let k = 0; k < combo.description.length; k++) {
-      const el = combo.description[k];
-
+    for (const el of combo.description) {
       // combo desc
-      if (el.style === 'NORMAL_TEXT') {
+      if (el.style === "NORMAL_TEXT") {
         desc.push(el.toMarkdown());
         continue;
       }
@@ -46,15 +45,19 @@ export class Combo extends ComboLibraryElement<ComboData> {
     }
 
     desc.push(ZERO_WIDTH_SPACE);
-    embed.setDescription(desc.join('\n'));
+    embed.setDescription(desc.join("\n"));
 
     const embedFields: APIEmbedField[] = [];
 
     // Iterate over fields
-    for (let k = 0; k < combo.fields.length; k++) {
-      const field = combo.fields[k];
-
-      const allowedFields = ['Description', 'Difficulty', 'Combo Steps', 'Video', 'Videos'];
+    for (const field of combo.fields) {
+      const allowedFields = [
+        "Description",
+        "Difficulty",
+        "Combo Steps",
+        "Video",
+        "Videos",
+      ];
       if (!allowedFields.includes(field.name)) continue;
 
       const lines = field.value.reduce((acc: string[], cur) => {
@@ -67,7 +70,7 @@ export class Combo extends ComboLibraryElement<ComboData> {
 
       const embedField = {
         name: field.name,
-        value: lines.join('\n'),
+        value: lines.join("\n"),
       };
 
       embedFields.push(embedField);
@@ -79,7 +82,7 @@ export class Combo extends ComboLibraryElement<ComboData> {
 
     // add link to the end of the last field
     if (headerLink) {
-      embedFields[embedFields.length - 1].value += `\n${headerLink}`;
+      embedFields[embedFields.length - 1]!.value += `\n${headerLink}`;
     }
 
     // console.log('embedFields', embedFields);
@@ -91,10 +94,11 @@ export class Combo extends ComboLibraryElement<ComboData> {
       const imageName = combo.members
         .map((m) => {
           // TypeScript type checking is being dumb here
-          const name = 'displayName' in m && m.displayName ? m.displayName : m.name;
-          return name.toLowerCase().replace(' ', '');
+          const name =
+            "displayName" in m && m.displayName ? m.displayName : m.name;
+          return name.toLowerCase().replace(" ", "");
         })
-        .join('-');
+        .join("-");
 
       embed.setImage(`attachment://${imageName}.png`);
     }
@@ -108,22 +112,25 @@ export class Combo extends ComboLibraryElement<ComboData> {
     if (!combo || !combo.members.length) return null;
     // console.log(combo.members);
 
-    const image = await ThumbnailGenerator.team(combo.members, { background: true });
+    const image = await team(combo.members, {
+      background: true,
+    });
 
     return image;
   }
 
-  public async getAttachments() {
+  public override async getAttachments() {
     const combo = this.data;
     const image = await this.generateTeamImage();
     if (!combo || !combo.members.length || !image) return [];
 
     const imageName = combo.members
       .map((m) => {
-        const name = 'displayName' in m && m.displayName ? m.displayName : m.name;
-        return name.toLowerCase().replace(' ', '');
+        const name =
+          "displayName" in m && m.displayName ? m.displayName : m.name;
+        return name.toLowerCase().replace(" ", "");
       })
-      .join('-');
+      .join("-");
 
     return [new AttachmentBuilder(image, { name: `${imageName}.png` })];
   }

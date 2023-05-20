@@ -1,4 +1,9 @@
-import { AttachmentBuilder, Embed, EmbedBuilder, MessageCreateOptions } from 'discord.js';
+import {
+  AttachmentBuilder,
+  Embed,
+  EmbedBuilder,
+  MessageCreateOptions,
+} from "discord.js";
 
 export abstract class ComboLibraryElement<T> {
   public data?: T;
@@ -18,7 +23,7 @@ export abstract class ComboLibraryElement<T> {
     if (this._embed) return this._embed;
 
     if (this.data) return this.createEmbed(this.data);
-    throw new Error('Unable to get embed');
+    throw new Error("Unable to get embed");
   }
 
   /**
@@ -55,8 +60,12 @@ export abstract class ComboLibraryElement<T> {
       data1.description !== data2.description ||
       data1.footer?.text !== data2.footer?.text ||
       data1.fields?.length !== data2.fields?.length ||
-      data1.fields?.some((f, i) => f.name !== data2.fields?.[i].name || f.value !== data2.fields[i].value) ||
-      data1.image?.url.split('/').pop() !== data2.image?.url.split('/').pop()
+      data1.fields?.some(
+        (f, i) =>
+          f.name !== data2.fields?.[i]?.name ||
+          f.value !== data2.fields[i]?.value
+      ) ||
+      data1.image?.url.split("/").pop() !== data2.image?.url.split("/").pop()
     ) {
       console.log(data1, data2);
       return false;

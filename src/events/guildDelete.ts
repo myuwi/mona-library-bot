@@ -1,8 +1,9 @@
-import { Guild } from 'discord.js';
+import { Events } from "discord.js";
+import { defineEvent } from "../lib/events";
 
-import { MClient } from '../client/MClient';
-
-export const guildDelete = async (client: MClient, guild: Guild) => {
-  console.log(`Left the guild ${guild.name}`);
-  // client.db.guilds.delete(guild.id);
-};
+export default defineEvent({
+  name: Events.GuildDelete,
+  run(_, guild) {
+    console.log(`[info] left a guild: ${guild.name}`);
+  },
+});

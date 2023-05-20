@@ -1,21 +1,23 @@
-import child_process from 'child_process';
-import { Message } from 'discord.js';
-import util from 'util';
-
-import { MClient } from '../../client/MClient';
-import { PermissionLevel } from '../../structures/Permissions';
-import { Command } from '../../types';
+import child_process from "child_process";
+import { PermissionFlagsBits } from "discord.js";
+import util from "util";
+import pkg from "../../../package.json";
+import { defineCommand } from "../../lib/commands";
 
 const exec = util.promisify(child_process.exec);
 
-export const command: Command = {
-  name: 'version',
-  description: 'A command to get help',
-  group: 'General',
-  usage: 'version',
-  permissionLevel: PermissionLevel.BOT_OWNER,
-  run: async (message: Message, args: string[], client: MClient) => {
-    const revision = (await exec('git rev-parse HEAD')).stdout.slice(0, 7).trim();
-    await message.channel.send(`Currently running \`v${client.version} (${revision})\``);
+export default defineCommand({
+  name: "version",
+  description: "Get bot version",
+  permissions: PermissionFlagsBits.ManageMessages,
+  async run(_, interaction) {
+    const revision = (await exec("git rev-parse HEAD")).stdout
+      .slice(0, 7)
+      .trim();
+
+    await interaction.reply({
+      content: `Currently running \`v${pkg.version} (${revision})\``,
+      ephemeral: true,
+    });
   },
-};
+});

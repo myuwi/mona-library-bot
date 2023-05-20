@@ -1,77 +1,85 @@
-import { Message } from 'discord.js';
+import { PermissionFlagsBits } from "discord.js";
+import { defineCommand } from "../../lib/commands";
+import {
+  LibraryStatuses,
+  LibraryUpdateResponse,
+  getLibraryStatus,
+  updateDirectory,
+  updateLibrary,
+} from "../../structures/ComboLibraryManager";
+import * as EmbedUtils from "../../structures/EmbedUtils";
 
-import { MClient } from '../../client/MClient';
-import * as EmbedUtils from '../../structures/EmbedUtils';
-import { LibraryUpdateResponse } from '../../structures/GuildComboLibraryManager';
-import { PermissionLevel } from '../../structures/Permissions';
-import { Command } from '../../types';
+export default defineCommand({
+  name: "update",
+  description: "Update the combo library",
+  permissions: PermissionFlagsBits.ManageMessages,
+  async run(client, interaction) {
+    await interaction.deferReply();
 
-export const command: Command = {
-  name: 'update',
-  description: 'Update the combo library',
-  aliases: [],
-  group: 'Library',
-  usage: 'update <directory>',
-  permissionLevel: PermissionLevel.HELPER,
-  run: async (message: Message, args: string[], client: MClient) => {
-    const guildLibraryManager = await client.comboLibraryManager.fetch(message.guild!);
+    const statusId = await getLibraryStatus(client, interaction.guild!);
 
-    if (!guildLibraryManager) {
-      return await message.channel.send({
-        embeds: [EmbedUtils.error('Unble to get combo library configuration for the current server')],
+    if (statusId === LibraryStatuses.CHANNEL_NOT_SET) {
+      return await interaction.editReply({
+        embeds: [
+          EmbedUtils.error(
+            "The combo library channel has not been set on this server"
+          ),
+        ],
       });
     }
 
-    if (args[0] === 'directory') {
-      try {
-        const statusMessage = await message.channel.send({ embeds: [EmbedUtils.info('Updating directory channel...')] });
-        await guildLibraryManager.updateDirectory();
-        await statusMessage.edit({ embeds: [EmbedUtils.success('Directory channel updated')] });
-      } catch (err: any) {
-        if (err.message === 'Library channel not set') {
-          return await message.channel.send({ embeds: [EmbedUtils.error('Library channel is not set')] });
-        }
-        console.error(err.toString());
-        return await message.channel.send({
-          embeds: [EmbedUtils.error('Unable to update directory channel: ' + err.message)],
-        });
-      }
-    }
-
     try {
-      const statusMessage = await message.channel.send({ embeds: [EmbedUtils.info('Updating library channel...')] });
+      await interaction.editReply({
+        embeds: [EmbedUtils.info("Updating library channel...")],
+      });
 
-      const status = await guildLibraryManager.update();
+      const status = await updateLibrary(client, interaction.guild!);
 
       if (status === LibraryUpdateResponse.UPDATED) {
         try {
-          await statusMessage.edit({ embeds: [EmbedUtils.info('Updating directory channel...')] });
-          await guildLibraryManager.updateDirectory();
+          await interaction.editReply({
+            embeds: [EmbedUtils.info("Updating directory channel...")],
+          });
+          await updateDirectory(client, interaction.guild!);
         } catch (err: any) {
-          if (err.message !== 'Library channel not set') {
+          if (err.message !== "Library channel not set") {
             console.error(err.toString());
-            await message.channel.send({
-              embeds: [EmbedUtils.error('Unable to update directory channel: ' + err.message)],
+            await interaction.editReply({
+              embeds: [
+                EmbedUtils.error(
+                  "Unable to update directory channel: " + err.message
+                ),
+              ],
             });
           }
         }
       }
 
       const messages = {
-        [LibraryUpdateResponse.CHANNEL_NOT_SET]: EmbedUtils.error('The combo library channel has not been set on this server'),
-        [LibraryUpdateResponse.ALREADY_UP_TO_DATE]: EmbedUtils.success('The combo library is already up to date, no update was performed'),
-        [LibraryUpdateResponse.UPDATED]: EmbedUtils.success('The combo library channel has been updated succeessfully'),
+        [LibraryUpdateResponse.CHANNEL_NOT_SET]: EmbedUtils.error(
+          "The combo library channel has not been set on this server"
+        ),
+        [LibraryUpdateResponse.ALREADY_UP_TO_DATE]: EmbedUtils.success(
+          "The combo library is already up to date, no update was performed"
+        ),
+        [LibraryUpdateResponse.UPDATED]: EmbedUtils.success(
+          "The combo library channel has been updated succeessfully"
+        ),
       };
 
       if (messages[status]) {
-        await statusMessage.edit({ embeds: [messages[status]] });
+        await interaction.editReply({ embeds: [messages[status]] });
       }
     } catch (err: any) {
       console.error(err.toString());
 
-      await message.channel.send({
-        embeds: [EmbedUtils.error('Something went wrong with the library update, see error log for more information')],
+      await interaction.editReply({
+        embeds: [
+          EmbedUtils.error(
+            "Something went wrong with the library update, see error log for more information"
+          ),
+        ],
       });
     }
   },
-};
+});

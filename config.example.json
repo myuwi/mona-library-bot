@@ -1,0 +1,6 @@
+{
+  "<guild_id_here>": {
+    "directoryChannelId": "<channel_id_here>",
+    "libraryChannelId": "<channel_id_here>"
+  }
+}

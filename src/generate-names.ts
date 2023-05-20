@@ -1,12 +1,17 @@
-import sharp from 'sharp';
-
-import { Character, Characters, Element, Elements, getCharacterFileName } from './GenshinData';
+import sharp from "sharp";
+import {
+  Character,
+  Characters,
+  Element,
+  Elements,
+  getCharacterFileName,
+} from "./GenshinData";
 
 (async () => {
   const data: (Element | Character)[] = [
     {
-      name: 'Empty',
-      displayName: '--',
+      name: "Empty",
+      displayName: "--",
       rarity: 1,
     },
     ...Characters,
@@ -15,7 +20,7 @@ import { Character, Characters, Element, Elements, getCharacterFileName } from '
 
   data.forEach(async (el) => {
     console.log(`Generating name file for: ${el.name}`);
-    const name = ('displayName' in el && el.displayName) || el.name;
+    const name = ("displayName" in el && el.displayName) || el.name;
 
     const svgImage = `
     <svg width="256" height="56">
@@ -32,9 +37,9 @@ import { Character, Characters, Element, Elements, getCharacterFileName } from '
     `;
 
     const svgBuffer = Buffer.from(svgImage);
-    const fileName = 'rarity' in el ? getCharacterFileName(el) : el.name;
+    const fileName = "rarity" in el ? getCharacterFileName(el) : el.name;
     const filePath = `./assets/names/${fileName}.png`;
-    const image = await sharp(svgBuffer).toFile(filePath);
+    await sharp(svgBuffer).toFile(filePath);
 
     console.log(`Generated name file for: ${fileName}`);
   });

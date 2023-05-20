@@ -1,32 +1,32 @@
-import Fuse from 'fuse.js';
+import Fuse from "fuse.js";
 
 export type Element = {
   name: string;
 };
 
-export const Elements: Readonly<Element[]> = [
+export const Elements = [
   {
-    name: 'Anemo',
+    name: "Anemo",
   },
   {
-    name: 'Cryo',
+    name: "Cryo",
   },
   {
-    name: 'Dendro',
+    name: "Dendro",
   },
   {
-    name: 'Electro',
+    name: "Electro",
   },
   {
-    name: 'Geo',
+    name: "Geo",
   },
   {
-    name: 'Hydro',
+    name: "Hydro",
   },
   {
-    name: 'Pyro',
+    name: "Pyro",
   },
-] as const;
+] as const satisfies Readonly<Element[]>;
 
 export type Character = {
   name: string;
@@ -37,328 +37,329 @@ export type Character = {
 
 export const Characters = [
   {
-    name: 'Aether',
+    name: "Aether",
     rarity: 5,
   },
   {
-    name: 'Albedo',
+    name: "Albedo",
     rarity: 5,
   },
   {
-    name: 'Alhaitham',
+    name: "Alhaitham",
     rarity: 5,
   },
   {
-    name: 'Aloy',
+    name: "Aloy",
     rarity: 5,
   },
   {
-    name: 'Amber',
+    name: "Amber",
     rarity: 4,
   },
   {
-    name: 'Arataki Itto',
-    displayName: 'Itto',
+    name: "Arataki Itto",
+    displayName: "Itto",
     rarity: 5,
   },
   {
-    name: 'Baizhu',
+    name: "Baizhu",
     rarity: 5,
   },
   {
-    name: 'Barbara',
+    name: "Barbara",
     rarity: 4,
   },
   {
-    name: 'Beidou',
+    name: "Beidou",
     rarity: 4,
   },
   {
-    name: 'Bennett',
+    name: "Bennett",
     rarity: 4,
   },
   {
-    name: 'Candace',
+    name: "Candace",
     rarity: 4,
   },
   {
-    name: 'Chongyun',
+    name: "Chongyun",
     rarity: 4,
   },
   {
-    name: 'Collei',
+    name: "Collei",
     rarity: 4,
   },
   {
-    name: 'Cyno',
+    name: "Cyno",
     rarity: 5,
   },
   {
-    name: 'Dehya',
+    name: "Dehya",
     rarity: 5,
   },
   {
-    name: 'Diluc',
+    name: "Diluc",
     rarity: 5,
   },
   {
-    name: 'Diona',
+    name: "Diona",
     rarity: 4,
   },
   {
-    name: 'Dori',
+    name: "Dori",
     rarity: 4,
   },
   {
-    name: 'Eula',
+    name: "Eula",
     rarity: 5,
   },
   {
-    name: 'Faruzan',
+    name: "Faruzan",
     rarity: 4,
   },
   {
-    name: 'Fischl',
+    name: "Fischl",
     rarity: 4,
   },
   {
-    name: 'Ganyu',
+    name: "Ganyu",
     rarity: 5,
   },
   {
-    name: 'Gorou',
+    name: "Gorou",
     rarity: 4,
   },
   {
-    name: 'Hu Tao',
+    name: "Hu Tao",
     rarity: 5,
   },
   {
-    name: 'Jean',
+    name: "Jean",
     rarity: 5,
   },
   {
-    name: 'Kaedehara Kazuha',
-    displayName: 'Kazuha',
+    name: "Kaedehara Kazuha",
+    displayName: "Kazuha",
     rarity: 5,
   },
   {
-    name: 'Kaeya',
+    name: "Kaeya",
     rarity: 4,
   },
   {
-    name: 'Kamisato Ayaka',
-    displayName: 'Ayaka',
+    name: "Kamisato Ayaka",
+    displayName: "Ayaka",
     rarity: 5,
   },
   {
-    name: 'Kamisato Ayato',
-    displayName: 'Ayato',
+    name: "Kamisato Ayato",
+    displayName: "Ayato",
     rarity: 5,
   },
   {
-    name: 'Kaveh',
+    name: "Kaveh",
     rarity: 4,
   },
   {
-    name: 'Keqing',
+    name: "Keqing",
     rarity: 5,
   },
   {
-    name: 'Kirara',
+    name: "Kirara",
     rarity: 4,
   },
   {
-    name: 'Klee',
+    name: "Klee",
     rarity: 5,
   },
   {
-    name: 'Kujou Sara',
+    name: "Kujou Sara",
     rarity: 4,
   },
   {
-    name: 'Kuki Shinobu',
-    displayName: 'Shinobu',
+    name: "Kuki Shinobu",
+    displayName: "Shinobu",
     rarity: 4,
   },
   {
-    name: 'Layla',
+    name: "Layla",
     rarity: 4,
   },
   {
-    name: 'Lisa',
+    name: "Lisa",
     rarity: 4,
   },
   {
-    name: 'Lumine',
+    name: "Lumine",
     rarity: 5,
   },
   {
-    name: 'Mika',
+    name: "Mika",
     rarity: 4,
   },
   {
-    name: 'Mona',
+    name: "Mona",
     rarity: 5,
   },
   {
-    name: 'Nahida',
+    name: "Nahida",
     rarity: 5,
   },
   {
-    name: 'Nilou',
+    name: "Nilou",
     rarity: 5,
   },
   {
-    name: 'Ningguang',
+    name: "Ningguang",
     rarity: 4,
   },
   {
-    name: 'Noelle',
+    name: "Noelle",
     rarity: 4,
   },
   {
-    name: 'Qiqi',
+    name: "Qiqi",
     rarity: 5,
   },
   {
-    name: 'Raiden Shogun',
-    displayName: 'Raiden',
+    name: "Raiden Shogun",
+    displayName: "Raiden",
     rarity: 5,
   },
   {
-    name: 'Razor',
+    name: "Razor",
     rarity: 4,
   },
   {
-    name: 'Rosaria',
+    name: "Rosaria",
     rarity: 4,
   },
   {
-    name: 'Sangonomiya Kokomi',
-    displayName: 'Kokomi',
+    name: "Sangonomiya Kokomi",
+    displayName: "Kokomi",
     rarity: 5,
   },
   {
-    name: 'Sayu',
+    name: "Sayu",
     rarity: 4,
   },
   {
-    name: 'Shenhe',
+    name: "Shenhe",
     rarity: 5,
   },
   {
-    name: 'Shikanoin Heizou',
-    displayName: 'Heizou',
+    name: "Shikanoin Heizou",
+    displayName: "Heizou",
     rarity: 4,
   },
   {
-    name: 'Sucrose',
+    name: "Sucrose",
     rarity: 4,
   },
   {
-    name: 'Tartaglia',
-    aliases: ['Childe'],
+    name: "Tartaglia",
+    aliases: ["Childe"],
     rarity: 5,
   },
   {
-    name: 'Thoma',
+    name: "Thoma",
     rarity: 4,
   },
   {
-    name: 'Tighnari',
+    name: "Tighnari",
     rarity: 5,
   },
   {
-    name: 'Traveler',
+    name: "Traveler",
     rarity: 5,
   },
   {
-    name: 'Venti',
+    name: "Venti",
     rarity: 5,
   },
   {
-    name: 'Wanderer',
-    aliases: ['Scaramouche'],
+    name: "Wanderer",
+    aliases: ["Scaramouche"],
     rarity: 5,
   },
   {
-    name: 'Xiangling',
+    name: "Xiangling",
     rarity: 4,
   },
   {
-    name: 'Xiao',
+    name: "Xiao",
     rarity: 5,
   },
   {
-    name: 'Xingqiu',
+    name: "Xingqiu",
     rarity: 4,
   },
   {
-    name: 'Xinyan',
+    name: "Xinyan",
     rarity: 4,
   },
   {
-    name: 'Yae Miko',
+    name: "Yae Miko",
     rarity: 5,
   },
   {
-    name: 'Yanfei',
+    name: "Yanfei",
     rarity: 4,
   },
   {
-    name: 'Yaoyao',
+    name: "Yaoyao",
     rarity: 4,
   },
   {
-    name: 'Yelan',
+    name: "Yelan",
     rarity: 5,
   },
   {
-    name: 'Yoimiya',
+    name: "Yoimiya",
     rarity: 5,
   },
   {
-    name: 'Yun Jin',
+    name: "Yun Jin",
     rarity: 4,
   },
   {
-    name: 'Zhongli',
+    name: "Zhongli",
     rarity: 5,
   },
 ] as const satisfies Readonly<Character[]>;
 
-export type CharacterName = (typeof Characters)[number]['name'];
+export type CharacterName = (typeof Characters)[number]["name"];
 
-export const getCharacterByName = <T extends CharacterName>(characterName: T): Character =>
-  Characters.find((c) => c.name === characterName || ('aliases' in c && c.aliases.some((a: string) => a === characterName)))!;
+export const getCharacterByName = <T extends CharacterName>(
+  characterName: T
+): Character =>
+  Characters.find(
+    (c) =>
+      c.name === characterName ||
+      ("aliases" in c && c.aliases.some((a: string) => a === characterName))
+  )!;
 
 const fuse = new Fuse([...Characters, ...Elements], {
   includeScore: true,
-  keys: ['name', 'aliases'],
+  keys: ["name", "aliases"],
 });
 
-export const fuzzySearch = (query: string, printResults = false): Character | Element | undefined => {
+export const fuzzySearch = (query: string): Character | Element | undefined => {
   const res = fuse.search(query);
-
-  if (printResults) {
-    console.log(res);
-  }
 
   if (!res[0] || (res[0].score && res[0].score > 0.5)) return undefined;
 
   return res[0].item;
 };
 
-export const getCharacterFileName = (char: Character) => char.name.replace(' ', '_');
+export const getCharacterFileName = (char: Character) =>
+  char.name.replace(" ", "_");
 
-export const parseTeam = (members: string[], throwOnNotFound = false) => {
+export const parseTeam = (members: string[]) => {
   const output: (Element | Character)[] = [];
   const invalid: string[] = [];
 
-  for (let i = 0; i < members.length; i++) {
-    const name = members[i];
-
+  for (const name of members) {
     const e = fuzzySearch(name);
 
     if (e) {
@@ -369,8 +370,8 @@ export const parseTeam = (members: string[], throwOnNotFound = false) => {
     invalid.push(name);
   }
 
-  if (throwOnNotFound && invalid.length) {
-    throw new Error('Unable to parse characters: ' + invalid.join(', '));
+  if (invalid.length) {
+    throw new Error("Unable to parse characters: " + invalid.join(", "));
   }
 
   return output;
