@@ -1,8 +1,9 @@
-import { Guild } from 'discord.js';
+import { Events } from "discord.js";
+import { defineEvent } from "../lib/events";
 
-import { MClient } from '../client/MClient';
-
-export const guildCreate = async (client: MClient, guild: Guild) => {
-  console.log(`Joined the guild ${guild.name}`);
-  client.db.guilds.insert(guild.id);
-};
+export default defineEvent({
+  name: Events.GuildCreate,
+  run(_, guild) {
+    console.log(`[info] joined a guild: ${guild.name}`);
+  },
+});

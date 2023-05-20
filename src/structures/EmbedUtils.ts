@@ -1,32 +1,38 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from "discord.js";
+import { colors } from "../colors";
 
-import { colors } from '../colors';
-
-export const singleLineEmbed = (message: string, status?: 'INFO' | 'SUCCESS' | 'ERROR') => {
+export const singleLineEmbed = (
+  message: string,
+  status?: "INFO" | "SUCCESS" | "ERROR"
+) => {
   let icon;
   let color;
   switch (status) {
-    case 'SUCCESS':
-      icon = '<:checkmark:895744617696346212>';
+    case "SUCCESS":
+      icon = "<:checkmark:895744617696346212>";
       color = colors.success;
       break;
-    case 'ERROR':
-      icon = '<:alert:895742534914019388>';
+    case "ERROR":
+      icon = "<:alert:895742534914019388>";
       color = colors.error;
       break;
-    case 'INFO':
+    case "INFO":
     default:
       // icon = '<:info:896484880169443428>';
       color = colors.primary;
   }
 
-  const m = icon ? `${icon} ${String.fromCharCode(8203)} ${String.fromCharCode(8203)} ${message}` : message;
+  const m = icon
+    ? `${icon} ${String.fromCharCode(8203)} ${String.fromCharCode(
+        8203
+      )} ${message}`
+    : message;
 
   return new EmbedBuilder().setColor(color).setDescription(m);
 };
 
-export const info = (message: string) => singleLineEmbed(message, 'INFO');
+export const info = (message: string) => singleLineEmbed(message, "INFO");
 
-export const success = (message: string) => singleLineEmbed(message, 'SUCCESS');
+export const success = (message: string) => singleLineEmbed(message, "SUCCESS");
 
-export const error = (message: string) => singleLineEmbed(message, 'ERROR');
+export const error = (message: string) => singleLineEmbed(message, "ERROR");

@@ -5,11 +5,17 @@
     "target": "es2019",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "strict": true,
     "types": ["jest", "node"],
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "resolveJsonModule": false
+    "resolveJsonModule": true,
+    "strict": true,
+    "useUnknownInCatchVariables": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true
   },
   "include": ["src/**/*.ts"],
   "compileOnSave": true

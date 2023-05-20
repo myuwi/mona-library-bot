@@ -1,4 +1,4 @@
-import * as docs from '@googleapis/docs';
+import * as docs from "@googleapis/docs";
 
 export type TextElement = {
   text: string;
@@ -20,7 +20,7 @@ export class DocElement {
   public get rawText() {
     const text = this.elements.reduce((val, cur) => {
       return val + cur.text;
-    }, '');
+    }, "");
 
     return text;
   }
@@ -37,7 +37,7 @@ export class DocElement {
         if (cur.link) text = `[${text}](${cur.link})`;
 
         return val + text;
-      }, '')
+      }, "")
       .trim();
 
     if (this.bullet) {
@@ -57,16 +57,16 @@ export class DocumentParser {
   }
 
   private async init() {
-    console.log('Initializing doc parser');
+    console.log("Initializing doc parser");
     const auth = new docs.auth.GoogleAuth({
-      keyFilename: 'service-account-credentials.json',
-      scopes: ['https://www.googleapis.com/auth/documents.readonly'],
+      keyFilename: "service-account-credentials.json",
+      scopes: ["https://www.googleapis.com/auth/documents.readonly"],
     });
 
     const authClient = await auth.getClient();
 
     const client = docs.docs({
-      version: 'v1',
+      version: "v1",
       auth: authClient,
     });
 
@@ -88,7 +88,7 @@ export class DocumentParser {
 
   public async parseDoc() {
     const doc = await this.fetchDocument();
-    console.log('Parsing document...');
+    console.log("Parsing document...");
     // console.log(doc);
 
     const content = doc.body?.content;
@@ -105,42 +105,44 @@ export class DocumentParser {
     const docElements: DocElement[] = [];
 
     // loop over the document content
-    for (let i = 0; i < content.length; i++) {
-      const element = content[i];
-
+    for (const element of content) {
       // skip if the element has no content
-      if (!element.paragraph?.elements) continue;
+      if (!element?.paragraph?.elements) continue;
 
       // convert paragraph content to an array of TextElement objects
-      let elements = element.paragraph.elements.reduce((acc: TextElement[], cur, i, arr) => {
-        let textContent = cur.textRun?.content;
-        // console.log(cur);
+      let elements = element.paragraph.elements.reduce(
+        (acc: TextElement[], cur) => {
+          let textContent = cur.textRun?.content;
+          // console.log(cur);
 
-        if (!textContent) return acc;
+          if (!textContent) return acc;
 
-        textContent = textContent.replace(/\n$/g, '');
-        // console.log('textContent', `"${textContent}"`);
+          textContent = textContent.replace(/\n$/g, "");
+          // console.log('textContent', `"${textContent}"`);
 
-        const newVal: TextElement = {
-          text: textContent,
-        };
+          const newVal: TextElement = {
+            text: textContent,
+          };
 
-        const textStyle = cur.textRun?.textStyle;
-        if (textStyle) {
-          if (textStyle.bold) newVal.bold = true;
-          if (textStyle.underline) newVal.underline = true;
-          if (textStyle.link && textStyle.link.url) newVal.link = textStyle.link.url;
-        }
+          const textStyle = cur.textRun?.textStyle;
+          if (textStyle) {
+            if (textStyle.bold) newVal.bold = true;
+            if (textStyle.underline) newVal.underline = true;
+            if (textStyle.link && textStyle.link.url)
+              newVal.link = textStyle.link.url;
+          }
 
-        return [...acc, newVal];
-      }, []);
+          return [...acc, newVal];
+        },
+        []
+      );
 
       if (!elements.length) continue;
 
-      if (elements.some((e) => e.text !== '')) {
-        elements = elements.filter((e) => e.text !== '');
+      if (elements.some((e) => e.text !== "")) {
+        elements = elements.filter((e) => e.text !== "");
       } else {
-        elements = [{ text: '' }];
+        elements = [{ text: "" }];
       }
 
       const data = new DocElement(elements);
@@ -160,15 +162,19 @@ export class DocumentParser {
       // detect if the item is a list item and add the correct bullet style
       const bulletListId = element.paragraph.bullet?.listId;
       if (lists && bulletListId) {
-        const bulletStyle = lists[bulletListId].listProperties?.nestingLevels![0];
+        const bulletStyle =
+          lists[bulletListId]?.listProperties?.nestingLevels![0];
         // console.log(bulletStyle);
 
         if (bulletStyle) {
           if (bulletStyle.glyphSymbol) {
             data.bullet = bulletStyle.glyphSymbol;
-          } else if (bulletStyle.glyphType === 'DECIMAL' && typeof bulletStyle.startNumber === 'number') {
+          } else if (
+            bulletStyle.glyphType === "DECIMAL" &&
+            typeof bulletStyle.startNumber === "number"
+          ) {
             // if not first item in the current list
-            if (typeof listIndexes[bulletListId] === 'number') {
+            if (typeof listIndexes[bulletListId] === "number") {
               listIndexes[bulletListId]++;
             } else {
               listIndexes[bulletListId] = bulletStyle.startNumber;
