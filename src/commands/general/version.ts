@@ -1,7 +1,8 @@
 import child_process from "child_process";
 import { PermissionFlagsBits } from "discord.js";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import util from "util";
-import pkg from "../../../package.json";
 import { defineCommand } from "../../lib/commands";
 
 const exec = util.promisify(child_process.exec);
@@ -11,12 +12,16 @@ export default defineCommand({
   description: "Get bot version",
   permissions: PermissionFlagsBits.ManageMessages,
   async run(_, interaction) {
+    const pkg = await readFile(resolve(__dirname, "../../../package.json"), {
+      encoding: "utf8",
+    });
+    const version = JSON.parse(pkg).version;
     const revision = (await exec("git rev-parse HEAD")).stdout
       .slice(0, 7)
       .trim();
 
     await interaction.reply({
-      content: `Currently running \`v${pkg.version} (${revision})\``,
+      content: `Currently running \`v${version} (${revision})\``,
       ephemeral: true,
     });
   },
