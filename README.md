@@ -12,15 +12,12 @@
 [Installation](#installation)
 •
 [Configuration](#configuration)
-•
-[Updating](#updating)
 
 </div>
 
 ## Features
 
 - Display the contents of a Google Docs document in a Discord channel using Discord message embeds
-- A simple permission system
 - Dynamically generate team comp images from text
 - (Partially) Supports multiple servers
 
@@ -32,38 +29,13 @@ Node version 16.6.0+ is required
 git clone https://github.com/myuwi/mona-library-bot.git
 cd mona-library-bot
 pnpm install
-pnpm prisma migrate deploy
-pnpm prisma generate
 pnpm build
 ```
 
 ## Configuration
 
-Copy and rename the `config.json.example` to `config.json`. It should look something like this:
-
-```json
-{
-  "token": "token_here",
-  "documentId": "document_id_here",
-  "ownerId": "discord_id_here",
-  "defaultPrefix": "m+"
-}
-```
-
-Set the `token` to your Discord bot's token and `documentId` to the id of the Google Docs document. The `ownerId` should be set to your Discord account's snowflake.
+Copy `config.example.json` to `config.json` and `.env.example` to `.env` and fill them with correct data.
 
 You will be required to register a Service Account on a Google Cloud Platform project by [following this guide (step 5 required only if the document is private)](https://cloud.google.com/docs/authentication/production#create_service_account). You should also grant the project access to the Google Docs API with access to the Google Docs API.
 
 The Service Account credentials should be placed in a file called `service-account-credentials.json` at the root of the project.
-
-## Updating
-
-```sh
-git pull
-pnpm install
-pnpm prisma migrate deploy
-pnpm prisma generate
-pnpm build
-```
-
-Be sure to also check [CHANGELOG.md](CHANGELOG.md) for breaking changes
