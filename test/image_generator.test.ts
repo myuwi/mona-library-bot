@@ -1,5 +1,5 @@
-import { access, mkdir, writeFile } from "fs/promises";
-import path from "path";
+import { access, mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { getCharacterByName, parseTeam } from "../src/GenshinData";
 import { team } from "../src/imageGenerator";
 

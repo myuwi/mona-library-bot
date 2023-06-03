@@ -1,8 +1,9 @@
 {
   "apps": [
     {
-      "name": "mona-bot",
-      "script": "./dist/index.js"
+      "name": "mona-library-bot",
+      "script": "pnpm",
+      "args": "start"
     }
   ]
 }
