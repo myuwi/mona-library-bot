@@ -12,6 +12,8 @@
 [Installation](#installation)
 •
 [Configuration](#configuration)
+•
+[PM2](#pm2)
 
 </div>
 
@@ -19,23 +21,31 @@
 
 - Display the contents of a Google Docs document in a Discord channel using Discord message embeds
 - Dynamically generate team comp images from text
-- (Partially) Supports multiple servers
 
 ## Installation
 
-Node version 16.6.0+ is required
+Node version 16.9.0+ is required
 
 ```sh
 git clone https://github.com/myuwi/mona-library-bot.git
 cd mona-library-bot
 pnpm install
-pnpm build
 ```
 
 ## Configuration
 
 Copy `config.example.json` to `config.json` and `.env.example` to `.env` and fill them with correct data.
 
-You will be required to register a Service Account on a Google Cloud Platform project by [following this guide (step 5 required only if the document is private)](https://cloud.google.com/docs/authentication/production#create_service_account). You should also grant the project access to the Google Docs API with access to the Google Docs API.
+You will also be required to register a Service Account on a Google Cloud Platform project and [follow these steps](https://github.com/googleapis/google-api-nodejs-client#service-account-credentials).
+You should also grant the project access to the Google Docs API.
 
 The Service Account credentials should be placed in a file called `service-account-credentials.json` at the root of the project.
+
+## PM2
+
+```sh
+npm i -g pm2
+pm2 startup
+pm2 start pm2.json
+pm2 save
+```

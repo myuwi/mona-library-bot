@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "module": "commonjs",
-    "target": "es2019",
+    "outDir": "dist",
+    "noEmit": true,
+    "module": "esnext",
+    "target": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "types": ["jest", "node"],
@@ -17,6 +18,5 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true
   },
-  "include": ["src/**/*.ts"],
-  "compileOnSave": true
+  "include": ["src/**/*.ts"]
 }

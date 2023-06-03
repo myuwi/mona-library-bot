@@ -7,9 +7,9 @@ import {
 } from "discord.js";
 import { Character, Characters, Elements, parseTeam } from "../../GenshinData";
 import { colors } from "../../colors";
+import { team } from "../../imageGenerator";
 import { defineCommand } from "../../lib/commands";
 import * as EmbedUtils from "../../structures/EmbedUtils";
-import { team } from "../../imageGenerator";
 
 export default defineCommand({
   name: "team",
