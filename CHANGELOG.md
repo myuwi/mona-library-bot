@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.0
+
+### Added
+
+- Added Freminet, Linette, Liney, Neuvillette and Wriothesley
+
 ## 0.15.0
 
 ### Added

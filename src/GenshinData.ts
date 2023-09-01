@@ -122,6 +122,10 @@ export const Characters = [
     rarity: 4,
   },
   {
+    name: "Freminet",
+    rarity: 4,
+  },
+  {
     name: "Ganyu",
     rarity: 5,
   },
@@ -194,6 +198,14 @@ export const Characters = [
     rarity: 5,
   },
   {
+    name: "Lynette",
+    rarity: 4,
+  },
+  {
+    name: "Lyney",
+    rarity: 5,
+  },
+  {
     name: "Mika",
     rarity: 4,
   },
@@ -203,6 +215,10 @@ export const Characters = [
   },
   {
     name: "Nahida",
+    rarity: 5,
+  },
+  {
+    name: "Neuvillette",
     rarity: 5,
   },
   {
@@ -280,6 +296,10 @@ export const Characters = [
   {
     name: "Wanderer",
     aliases: ["Scaramouche"],
+    rarity: 5,
+  },
+  {
+    name: "Wriothesley",
     rarity: 5,
   },
   {
