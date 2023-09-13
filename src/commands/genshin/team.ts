@@ -20,10 +20,16 @@ export default defineCommand({
       description: "A comma (,) separated list of character names",
       type: ApplicationCommandOptionType.String,
     },
+    {
+      name: "background",
+      description: "Draw a background?",
+      type: ApplicationCommandOptionType.Boolean,
+    },
   ],
   permissions: PermissionFlagsBits.ManageMessages,
   async run(_, interaction) {
     const members = interaction.options.getString("members");
+    const background = interaction.options.getBoolean("background");
 
     if (!members) {
       const elements = Object.values(Elements)
@@ -76,7 +82,9 @@ export default defineCommand({
       });
     }
 
-    const image = await team(chars);
+    const image = await team(chars, {
+      background: !!background,
+    });
 
     if (!image) {
       return await interaction.editReply({
