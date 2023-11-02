@@ -55,18 +55,26 @@ export abstract class ComboLibraryElement<T> {
     const data1 = embed1.data;
     const data2 = embed2.data;
 
-    if (
-      data1.title?.trim() !== data2.title?.trim() ||
-      data1.description !== data2.description ||
-      data1.footer?.text !== data2.footer?.text ||
-      data1.fields?.length !== data2.fields?.length ||
-      data1.fields?.some(
-        (f, i) =>
-          f.name !== data2.fields?.[i]?.name ||
-          f.value !== data2.fields[i]?.value
-      ) ||
-      data1.image?.url.split("/").pop() !== data2.image?.url.split("/").pop()
-    ) {
+    const diff = {
+      title: data1.title?.trim() !== data2.title?.trim(),
+      desc: data1.description !== data2.description,
+      footer: data1.footer?.text !== data2.footer?.text,
+      fields:
+        data1.fields?.length !== data2.fields?.length ||
+        data1.fields?.some(
+          (f, i) =>
+            f.name !== data2.fields?.[i]?.name ||
+            f.value !== data2.fields[i]?.value
+        ),
+      image:
+        data1.image?.url.split("?").shift()?.split("/").pop() !==
+        data2.image?.url.split("?").shift()?.split("/").pop(),
+    };
+
+    const different = Object.values(diff).some((v) => v);
+
+    if (different) {
+      console.log(diff);
       console.log(data1, data2);
       return false;
     }

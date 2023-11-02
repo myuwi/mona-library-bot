@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.17.0
+
+### Added
+
+- Added Charlotte and Furina
+
+### Fixed
+
+- Fixed image url diffing
+
 ## 0.16.0
 
 ### Added
