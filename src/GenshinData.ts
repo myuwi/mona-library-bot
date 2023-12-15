@@ -86,6 +86,10 @@ export const Characters = [
     rarity: 4,
   },
   {
+    name: "Chevreuse",
+    rarity: 4,
+  },
+  {
     name: "Chongyun",
     rarity: 4,
   },
@@ -223,6 +227,10 @@ export const Characters = [
   },
   {
     name: "Nahida",
+    rarity: 5,
+  },
+  {
+    name: "Navia",
     rarity: 5,
   },
   {

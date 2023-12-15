@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.0
+
+### Added
+
+- Added Chevreuse and Navia
+
 ## 0.17.0
 
 ### Added
